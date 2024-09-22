@@ -1,0 +1,39 @@
+load("@com_extension_dev//build:graph_extension.bzl", "graph_cc_extension")
+load("@com_extension_dev//build:registry.bzl", "register_extension")
+
+exports_files(["LICENSE"])
+
+graph_cc_extension(
+    name = "<PLUGIN>",
+    srcs = [
+        "<PLUGIN>_ext.cpp",
+    ],
+    hdrs = [
+        <HDRS>,
+    ],
+    deps = [
+        "@NvDsBaseExt",
+        "@NvDsInterfaceExt",
+        "@glib",
+        "@gstreamer",
+    ],
+)
+
+register_extension(
+    name = "register_<PLUGIN>_ext",
+    badges = [""],
+    extension = "<PLUGIN>",
+    labels = [
+        <LABELS>,
+    ],
+    ngc_dependencies = {
+        "NvDsBaseExt": "1.5.0",
+    },
+    priority = "1",
+    git_repository = "",
+    compute_dependencies = ["deepstream"],
+    url = "<URL>",
+    uuid = "<UUID>",
+    version = "<VERSION>",
+    visibility = ["//visibility:public"],
+)
