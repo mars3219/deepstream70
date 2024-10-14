@@ -13,6 +13,12 @@ tests/
 **/*.o
 **/*.a
 **/*.so
+**/*.pth
+**/*.onnx
+**/*.tlt
+**/*.engine
+**/*.zip
+
 
 CaffeMNIST/**/build/
 
@@ -25,3 +31,6 @@ yolo/data/**/*.png
 yolo/**/build/
 senet/**/build/
 anomaly/**/build/
+super-gradients/
+opencv/
+DeepStream-Yolo/
