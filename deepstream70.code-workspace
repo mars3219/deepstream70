@@ -5,6 +5,12 @@
 		},
 		{
 			"path": "../nvidia-tao"
+		},
+		{
+			"path": "../mmaction2"
+		},
+		{
+			"path": "../mmdeploy"
 		}
 	],
 	"settings": {}

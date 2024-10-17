@@ -431,9 +431,8 @@ SequenceImagePreprocess::setDevice()
     return NVDSPREPROCESS_SUCCESS;
 }
 
-// TSN model
 // Implementation of cast context initLib.
-// 3D models input_shape(NSCHW) has 5 dims and 2D models(NSHW) has 4 dims. 2D input
+// 3D models input_shape(NCSHW) has 5 dims and 2D models(NSHW) has 4 dims. 2D input
 // shape is reshaped from 3D's NCSHW order shape.
 // Parse channel-scale-factors, mean-offsets, subsample, stride from [user-config].
 NvDsPreProcessStatus
@@ -463,22 +462,20 @@ SequenceImagePreprocess::init()
     _N = input_shape[0];
     _H = input_shape[bank - 2];
     _W = input_shape[bank - 1];
-
     if (is3D) {
-        if (_C != (uint32_t)input_shape[2]) {
-            LOG_ERROR("%d, %d, %d, %d, %d", input_shape[0], input_shape[1], input_shape[2], input_shape[3], input_shape[4]);
+        if (_C != (uint32_t)input_shape[1]) {
             LOG_ERROR(
                 "3D channels: %d configured different from network-input-shape[1]: %d", (int)_C,
-                input_shape[2]);
+                input_shape[1]);
             return NVDSPREPROCESS_CONFIG_FAILED;
         }
-        _S = (uint32_t)input_shape[1];
-        DSASSERT(input_shape[1] > 0);
+        _S = (uint32_t)input_shape[2];
+        DSASSERT(input_shape[2] > 0);
     } else {
-        _S = input_shape[2] / _C;
-        if (input_shape[2] % _C) {
+        _S = input_shape[1] / _C;
+        if (input_shape[1] % _C) {
             LOG_ERROR(
-                "2D sequence network-input-shape[1]: %d must be mod channels: %d", input_shape[2],
+                "2D sequence network-input-shape[1]: %d must be mod channels: %d", input_shape[1],
                 (int)_C);
             return NVDSPREPROCESS_CONFIG_FAILED;
         }
@@ -492,7 +489,7 @@ SequenceImagePreprocess::init()
         LOG_INFO(
             "2D custom sequence network shape NSHW[%u, %u, %u, %u], reshaped as "
             "[N: %u, C: %u, S:%u, H: %u, W:%u]",
-            dims[0], dims[2], dims[1], dims[3], _N, _C, _S, _H, _W);
+            dims[0], dims[1], dims[2], dims[3], _N, _C, _S, _H, _W);
     }
     if (_C > 4) {
         LOG_ERROR("custom sequence preprocess lib does not support channels larger than 4");
@@ -519,92 +516,6 @@ SequenceImagePreprocess::init()
     LOG_INFO("SequenceImagePreprocess initialized successfully");
     return NVDSPREPROCESS_SUCCESS;
 }
-
-// // Implementation of cast context initLib.
-// // 3D models input_shape(NCSHW) has 5 dims and 2D models(NSHW) has 4 dims. 2D input
-// // shape is reshaped from 3D's NCSHW order shape.
-// // Parse channel-scale-factors, mean-offsets, subsample, stride from [user-config].
-// NvDsPreProcessStatus
-// SequenceImagePreprocess::init()
-// {
-//     bool is3D = true;
-//     auto const& input_shape = _initParams.tensor_params.network_input_shape;
-//     uint32_t bank = input_shape.size();
-//     if (bank == 5) {
-//         is3D = true;
-//         LOG_DEBUG("considered as 3d sequence input since network_input_shape size is 5");
-//     } else if (bank == 4) {
-//         is3D = false;
-//         LOG_DEBUG("considered as 2d sequence input since network_input_shape size is 5");
-//     } else {
-//         LOG_ERROR("network_input_shape size must be 4 or 5 dims. check config file");
-//         return NVDSPREPROCESS_CONFIG_FAILED;
-//     }
-
-//     _C = getChannels(_initParams.tensor_params.network_color_format);
-//     if (_C <= 0 || _C > 4) {
-//         LOG_ERROR(
-//             "get channels from network_color_format:%d failed",
-//             (int)_initParams.tensor_params.network_color_format);
-//         return NVDSPREPROCESS_CONFIG_FAILED;
-//     }
-//     _N = input_shape[0];
-//     _H = input_shape[bank - 2];
-//     _W = input_shape[bank - 1];
-//     if (is3D) {
-//         if (_C != (uint32_t)input_shape[1]) {
-//             LOG_ERROR(
-//                 "3D channels: %d configured different from network-input-shape[1]: %d", (int)_C,
-//                 input_shape[1]);
-//             return NVDSPREPROCESS_CONFIG_FAILED;
-//         }
-//         _S = (uint32_t)input_shape[2];
-//         DSASSERT(input_shape[2] > 0);
-//     } else {
-//         _S = input_shape[1] / _C;
-//         if (input_shape[1] % _C) {
-//             LOG_ERROR(
-//                 "2D sequence network-input-shape[1]: %d must be mod channels: %d", input_shape[1],
-//                 (int)_C);
-//             return NVDSPREPROCESS_CONFIG_FAILED;
-//         }
-//     }
-//     if (is3D) {
-//         LOG_INFO(
-//             "3D custom sequence network info(NCSHW), [N: %u, C: %u, S: %u, H: %u, W:%u]", _N, _C,
-//             _S, _H, _W);
-//     } else {
-//         auto const& dims = input_shape;
-//         LOG_INFO(
-//             "2D custom sequence network shape NSHW[%u, %u, %u, %u], reshaped as "
-//             "[N: %u, C: %u, S:%u, H: %u, W:%u]",
-//             dims[0], dims[1], dims[2], dims[3], _N, _C, _S, _H, _W);
-//     }
-//     if (_C > 4) {
-//         LOG_ERROR("custom sequence preprocess lib does not support channels larger than 4");
-//         return NVDSPREPROCESS_CONFIG_FAILED;
-//     }
-//     DSASSERT(_C && _H && _W && _S && _N);
-//     _means = {{0.0, 0.0, 0.0, 0.0}};
-//     _scales = {{1.0, 1.0, 1.0, 1.0}};
-//     CHECK_PROCESS_ERROR(parseUserConfig(), "custom-lib parse user-configs failed");
-
-//     CHECK_PROCESS_ERROR(setDevice(), "set gpu device failed");
-//     CHECK_CUDA_ERR(
-//         cudaStreamCreateWithPriority(&_cuStream, 0, 0),
-//         "cudaStreamCreateWithPriority failed");
-
-
-//     _bufManager = std::make_unique<BufferManager>(
-//         nullptr, _initParams.tensor_params, _S, _C, _cuStream, _stride, _subsample);
-//     DSASSERT(_bufManager);
-//     LOG_INFO(
-//         "Sequence preprocess buffer manager initialized with stride: %u, subsample: %u", _stride,
-//         _subsample);
-
-//     LOG_INFO("SequenceImagePreprocess initialized successfully");
-//     return NVDSPREPROCESS_SUCCESS;
-// }
 
 // parse user-config
 NvDsPreProcessStatus

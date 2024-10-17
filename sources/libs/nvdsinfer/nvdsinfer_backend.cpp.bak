@@ -132,8 +132,6 @@ TrtBackendContext::canSupportBatchDims(int bindingIdx,
 {
     assert((int)m_AllLayers.size() > bindingIdx);
     assert((int)m_AllLayers[bindingIdx].isInput == 1);
-
-
     /* Number of dimensions should match. */
     assert(m_AllLayers[bindingIdx].inferDims.numDims == batchDims.dims.numDims);
 
@@ -141,17 +139,6 @@ TrtBackendContext::canSupportBatchDims(int bindingIdx,
         m_AllLayers[bindingIdx].profileDims[kSELECTOR_MIN];
     const NvDsInferBatchDims& maxBatchDims =
         m_AllLayers[bindingIdx].profileDims[kSELECTOR_MAX];
-
-    // /* 임시 추가 코드 확인용*/
-
-    // std::cout << "m_AllLayers[bindingIdx].inferDims.numDims: "
-    //           << m_AllLayers[bindingIdx].inferDims.numDims << std::endl;
-
-    // std::cout << "batchDims.dims.numDims: " << batchDims.dims.numDims << std::endl;
-    // std::cout << "minBatchDims.dims.numDims: " << minBatchDims.dims.numDims << std::endl;
-    // std::cout << "maxbatchDims.dims.numDims: " << maxBatchDims.dims.numDims << std::endl;
-     
-  
 
     /* Number of dimensions should match. */
     assert(minBatchDims.dims.numDims == maxBatchDims.dims.numDims);
