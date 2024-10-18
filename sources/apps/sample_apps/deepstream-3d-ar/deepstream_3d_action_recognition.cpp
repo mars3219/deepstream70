@@ -11,10 +11,6 @@
  */
 
 #include "deepstream_action.h"
-#include <vector>
-#include <string>
-#include <fstream>
-#include <sstream>
 
 /** Defines the maximum size of a string. */
 #define MAX_STR_LEN 2048
@@ -53,54 +49,9 @@ static volatile GstElement *gPipeline = nullptr;
 /* Debug envrionment variable name for libnvds_custom_sequence_preprocess.so */
 #define ENV_CUSTOM_SEQUENC_DEBUG "DS_CUSTOM_SEQUENC_DEBUG"
 
-// #define MAX_CLASS_LEN 5
-// static const gchar kActionClasseLabels[MAX_CLASS_LEN][MAX_LABEL_SIZE] = {
-//     "push", "fall_floor" , "walk", "run", "ride_bike"};
-
-/* get label*/
-std::string getLabelFilePath(const std::string& inferConfigPath) {
-  SafePtr<GKeyFile> keyfile(g_key_file_new(), g_key_file_free);
-  GError* error = nullptr;
-
-  if (!g_key_file_load_from_file(keyfile.get(), inferConfigPath.c_str(), G_KEY_FILE_NONE, &error)) {
-    g_printerr("Could not load config file: %s\n", inferConfigPath.c_str());
-    return "";
-  }
-
-  if (g_key_file_has_key(keyfile.get(), "property", "labelfile-path", nullptr)) {
-        
-        char* labelFilePath = g_key_file_get_string(keyfile.get(), "property", "labelfile-path", &error);
-        std::string result(labelFilePath);
-        g_free(labelFilePath);
-        return result;
-    } else {
-        g_printerr("labelfile-path not found in config file: %s\n", inferConfigPath.c_str());
-        return "";
-    }
-}
-
-/* assign label into vector dynamically*/
-#define MAX_CLASS_LEN 400
-static std::vector<std::string> kActionClasseLabels;
-
-std::vector<std::string> loadLabels(const std::string& labelfile_path) {
-  std::vector<std::string> labels;
-  std::ifstream file(labelfile_path);
-
-  if (!file.is_open()) {
-    g_printerr("Could not open label file: %s\n", labelfile_path.c_str());
-    return labels;
-  }
-
-  std::string line;
-  while (std::getline(file, line)) {
-    if (!line.empty()) {
-      labels.push_back(line);
-    }
-  }
-  file.close();
-  return labels;
-}
+#define MAX_CLASS_LEN 5
+static const gchar kActioClasseLabels[MAX_CLASS_LEN][MAX_LABEL_SIZE] = {
+    "push", "fall_floor" , "walk", "run", "ride_bike"};
 
 static FpsCalculation gFpsCal(50);
 
@@ -150,18 +101,12 @@ pgie_src_pad_buffer_probe(GstPad *pad, GstPadProbeInfo *info,
   GstBuffer *buf = (GstBuffer *)info->data;
   NvDsBatchMeta *batch_meta = gst_buffer_get_nvds_batch_meta(buf);
 
-  if (!batch_meta) {
-    g_print("batch_meta is NULL. No metadata found for this buffer.\n");
-  }
-
   NvDsMetaList *l_user_meta = NULL;
   NvDsUserMeta *user_meta = NULL;
-
   for (l_user_meta = batch_meta->batch_user_meta_list; l_user_meta != NULL;
        l_user_meta = l_user_meta->next)
   {
     user_meta = (NvDsUserMeta *)(l_user_meta->data);
-
     if (user_meta->base_meta.meta_type == NVDS_PREPROCESS_BATCH_META)
     {
       GstNvDsPreProcessBatchMeta *preprocess_batchmeta =
@@ -174,9 +119,9 @@ pgie_src_pad_buffer_probe(GstPad *pad, GstPadProbeInfo *info,
           model_dims = "2D: AR - ";
         }
       }
-
       for (auto &roi_meta : preprocess_batchmeta->roi_vector)
       {
+        std::cout << roi_meta.classifier_meta_list << std::endl;
         NvDsMetaList *l_user = NULL;
         for (l_user = roi_meta.roi_user_meta_list; l_user != NULL;
              l_user = l_user->next)
@@ -188,7 +133,6 @@ pgie_src_pad_buffer_probe(GstPad *pad, GstPadProbeInfo *info,
             gfloat max_prob = 0;
             gint class_id = 0;
             gfloat *buffer = (gfloat *)tensor_meta->out_buf_ptrs_host[0];
-            
             for (size_t i = 0; i < tensor_meta->output_layers_info[0].inferDims.d[0]; i++)
             {
               if (buffer[i] > max_prob)
@@ -199,9 +143,9 @@ pgie_src_pad_buffer_probe(GstPad *pad, GstPadProbeInfo *info,
             }
             const gchar *label = "";
             if (class_id < MAX_CLASS_LEN)
-              label = kActionClasseLabels[class_id].c_str();
+              label = kActioClasseLabels[class_id];
+            LOG_DEBUG("output tensor result: cls_id: %d, scrore:%.3f, label: %s", class_id, max_prob, label);
             // g_print("output tensor result: cls_id: %d, scrore:%.3f, label: %s", class_id, max_prob, label);
-            LOG_DEBUG("output tensor result: cls_id: %d, score:%.3f, label: %s", class_id, max_prob, label);
           }
         }
 
@@ -211,13 +155,6 @@ pgie_src_pad_buffer_probe(GstPad *pad, GstPadProbeInfo *info,
              l_classifier = l_classifier->next)
         {
           NvDsClassifierMeta *classifier_meta = (NvDsClassifierMeta *)(l_classifier->data);
-
-          // 클래스 ID와 점수 출력
-          std::cout << "Classifier " << classifier_meta << ":\n";
-          std::cout << "  num_labels: " << classifier_meta->num_labels << "\n";
-          std::cout << "  label_info_list: " << classifier_meta->label_info_list << "\n";
-
-
           NvDsLabelInfoList *l_label;
           for (l_label = classifier_meta->label_info_list; l_label != NULL;
                l_label = l_classifier->next)
@@ -512,21 +449,6 @@ int main(int argc, char *argv[])
     unsetenv(ENV_CUSTOM_SEQUENC_DEBUG);
   }
 
-  /*get the label path*/
-  std::string label_file_path = getLabelFilePath(gActionConfig.infer_config);
-  std::cout << "label path : " << label_file_path << std::endl;
-  std::vector<std::string> labels = loadLabels(label_file_path);
-
-  if (labels.empty()) {
-    g_printerr("No labels loaded. Exiting...\n");
-    return -1;
-  }
-
-  std::cout << "labels size: " << labels.size() << std:: endl;
-  // std::cout << "labels!" << labels[0] << std::endl;
-  /*use the labels assigned dynamically*/
-  kActionClasseLabels = labels;
-
   num_sources = gActionConfig.uri_list.size();
 
   loop = g_main_loop_new(NULL, FALSE);
@@ -544,6 +466,7 @@ int main(int argc, char *argv[])
     return -1;
   }
   gst_bin_add(GST_BIN(pipeline), streammux);
+
   for (i = 0; i < num_sources; i++)
   {
     GstPad *sinkpad, *srcpad;
@@ -711,10 +634,9 @@ int main(int argc, char *argv[])
   pgie_src_pad = gst_element_get_static_pad(pgie, "src");
   if (!pgie_src_pad)
     g_print("Unable to get pgie src pad\n");
-  else {
+  else
     gst_pad_add_probe(pgie_src_pad, GST_PAD_PROBE_TYPE_BUFFER,
                       pgie_src_pad_buffer_probe, NULL, NULL);
-  }
   gst_object_unref(pgie_src_pad);
 
   /* Set the pipeline to "playing" state */

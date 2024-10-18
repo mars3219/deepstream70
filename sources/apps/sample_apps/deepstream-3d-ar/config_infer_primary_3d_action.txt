@@ -50,13 +50,12 @@
 [property]
 gpu-id=0
 
-# tlt-encoded-model=./resnet18_3d_rgb_hmdb5_32.etlt
-# tlt-model-key=nvidia_tao
-model-engine-file=./tsn_fp16_k400_rgb.engine
+#tlt-encoded-model=./resnet18_3d_rgb_hmdb5_32.etlt
+#tlt-model-key=nvidia_tao
+model-engine-file=./resnet18_3d_rgb_hmdb5_32.etlt_b4_gpu0_fp16.engine
 
-# labelfile-path=./labels.txt
-labelfile-path=/workspace/sources/apps/sample_apps/deepstream-3d-action-recognition/custom_3d_config/labels.txt
-batch-size=1
+labelfile-path=labels.txt
+batch-size=4
 process-mode=1
 
 # requries preprocess metadata input
