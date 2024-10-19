@@ -53,7 +53,7 @@ static volatile GstElement *gPipeline = nullptr;
 /* Debug envrionment variable name for libnvds_custom_sequence_preprocess.so */
 #define ENV_CUSTOM_SEQUENC_DEBUG "DS_CUSTOM_SEQUENC_DEBUG"
 
-// #define MAX_CLASS_LEN 5
+#define MAX_CLASS_LEN 400 
 // static const gchar kActionClasseLabels[MAX_CLASS_LEN][MAX_LABEL_SIZE] = {
 //     "push", "fall_floor" , "walk", "run", "ride_bike"};
 
@@ -206,18 +206,12 @@ pgie_src_pad_buffer_probe(GstPad *pad, GstPadProbeInfo *info,
         }
 
         NvDsMetaList *l_classifier = NULL;
-
+    
         for (l_classifier = roi_meta.classifier_meta_list; l_classifier != NULL;
              l_classifier = l_classifier->next)
         {
           NvDsClassifierMeta *classifier_meta = (NvDsClassifierMeta *)(l_classifier->data);
-
-          // 클래스 ID와 점수 출력
-          std::cout << "Classifier " << classifier_meta << ":\n";
-          std::cout << "  num_labels: " << classifier_meta->num_labels << "\n";
-          std::cout << "  label_info_list: " << classifier_meta->label_info_list << "\n";
-
-
+          
           NvDsLabelInfoList *l_label;
           for (l_label = classifier_meta->label_info_list; l_label != NULL;
                l_label = l_classifier->next)

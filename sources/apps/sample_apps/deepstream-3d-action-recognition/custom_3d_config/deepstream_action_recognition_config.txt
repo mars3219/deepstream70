@@ -17,7 +17,7 @@
 [action-recognition]
 
 # stream/file source list
-# uri-list=file:///workspace/video/badminton1.mp4;file:///workspace/video/badminton2.mp4;file:///workspace/video/badminton3.mp4;file:///workspace/video/badminton4.mp4
+#uri-list=file:///workspace/video/badminton1.mp4;file:///workspace/video/badminton2.mp4;file:///workspace/video/badminton3.mp4;file:///workspace/video/badminton4.mp4
 uri-list=file:///workspace/video/badminton1.mp4
 
 # eglglessink settings

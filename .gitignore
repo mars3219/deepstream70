@@ -18,6 +18,7 @@ tests/
 **/*.tlt
 **/*.engine
 **/*.zip
+**/*.etlt
 
 
 CaffeMNIST/**/build/

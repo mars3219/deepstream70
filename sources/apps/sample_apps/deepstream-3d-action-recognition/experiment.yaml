@@ -1,0 +1,49 @@
+results_dir: /results/rgb_3d_ptm
+encryption_key: nvidia_tao
+model:
+  model_type: rgb
+  backbone: resnet_18
+  rgb_seq_length: 32
+  input_height: 224
+  input_width: 224
+  input_type: 3d
+  sample_strategy: consecutive
+  dropout_ratio: 0.0
+  rgb_pretrained_num_classes: 5
+dataset:
+  train_dataset_dir: /data/train
+  val_dataset_dir: /data/test
+  label_map:
+    push: 0
+    fall_floor: 1
+    walk: 2
+    run: 3
+    ride_bike: 4
+  batch_size: 8
+  workers: 8
+  clips_per_video: 5
+  augmentation_config:
+    train_crop_type: random_crop
+    horizontal_flip_prob: 0.5
+    rgb_input_mean: [0.5]
+    rgb_input_std: [0.5]
+    val_center_crop: true
+    crop_smaller_edge: 256
+train:
+  optim:
+    lr: 0.01
+    momentum: 0.9
+    weight_decay: 0.0005
+    lr_scheduler: MultiStep
+    lr_steps: [30, 60, 80]
+    lr_decay: 0.1
+  num_epochs: 100
+  checkpoint_interval: 10
+evaluate:
+  checkpoint: "??"
+  test_dataset_dir: "??"
+inference:
+  checkpoint: "??"
+  inference_dataset_dir: "??"
+export:
+  checkpoint: "??"

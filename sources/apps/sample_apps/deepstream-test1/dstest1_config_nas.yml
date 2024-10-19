@@ -10,30 +10,21 @@
 # its affiliates is strictly prohibited.
 ################################################################################
 
-name: "resnet18_2d_rgb"
-platform: "tensorrt_plan"
-max_batch_size: 4
-default_model_filename: "resnet18_2d_rgb.engine"
-input [
-  {
-    name: "input_rgb"
-    data_type: TYPE_FP32
-    dims: [ 96, 224, 224 ]
-  }
-]
+source:
+  location: ../../../../samples/streams/sample_720p.h264
 
-output [
-  {
-    name: "fc_pred"
-    data_type: TYPE_FP32
-    dims: [ 5 ]
-  }
-]
+streammux:
+  batch-size: 1
+  batched-push-timeout: 40000
+  width: 1920
+  height: 1080
 
-instance_group [
-  {
-    kind: KIND_GPU
-    count: 1
-    gpus: 0
-  }
-]
+# Inference using nvinfer:
+primary-gie:
+  plugin-type: 0
+  config-file-path: /workspace/sources/apps/sample_apps/deepstream-test1/dstest1_pgie_config_nas.yml
+
+## Inference using nvinferserver:
+#primary-gie:
+#  plugin-type: 1
+#  config-file-path: dstest1_pgie_nvinferserver_config.txt

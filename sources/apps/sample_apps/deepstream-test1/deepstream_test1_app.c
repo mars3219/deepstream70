@@ -40,9 +40,9 @@
   }
 
 gint frame_number = 0;
-gchar pgie_classes_str[4][32] = { "Vehicle", "TwoWheeler", "Person",
-  "Roadsign"
-};
+// gchar pgie_classes_str[4][32] = { "Vehicle", "TwoWheeler", "Person",
+//   "Roadsign"
+// };
 
 /* osd_sink_pad_buffer_probe  will extract metadata received on OSD sink pad
  * and update params for drawing rectangle, object information etc. */
