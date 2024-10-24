@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "../mmdeploy"
+		},
+		{
+			"path": "../../HDD2"
 		}
 	],
 	"settings": {}
