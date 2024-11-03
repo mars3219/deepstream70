@@ -27,8 +27,8 @@ msgconv:
 
 msgbroker:
   proto-lib: /opt/nvidia/deepstream/deepstream/lib/libnvds_kafka_proto.so
-  conn-str: <host>;<port>
-  topic: <topic>
+  conn-str: 127.0.0.1;9092
+  topic: deepstream
   sync: 0
 
 sink:

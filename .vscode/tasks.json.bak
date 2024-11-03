@@ -1,0 +1,51 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "build",
+            "command": "g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-I/usr/include/gstreamer-1.0",
+                "-I/usr/include/glib-2.0",
+                "-I/usr/lib/x86_64-linux-gnu/glib-2.0/include",
+                "-I/usr/include/opencv4",
+                "-I/opt/nvidia/deepstream/deepstream-7.0/sources/includes",
+                "-L/opt/nvidia/deepstream/deepstream-7.0/lib",
+                "-I/usr/local/cuda-12.2/include",
+                "-L/usr/local/cuda-12.2/lib64",  
+                "-lcudart",                           
+                "-lgstreamer-1.0",
+                "-lgobject-2.0",
+                "-lglib-2.0",
+                "-lgstapp-1.0",
+                "-pthread",
+                "-lopencv_core",
+                "-lopencv_imgproc",
+                "-lopencv_highgui",
+                "-lopencv_imgcodecs",
+                "-lnvds_meta",
+                "-lnvdsgst_helper",
+                "-lnvdsgst_meta",
+                "-Wl,-rpath,/opt/nvidia/deepstream/deepstream-7.0/lib/"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "compiler: /usr/bin/g++"
+        }
+    ]
+}
+  

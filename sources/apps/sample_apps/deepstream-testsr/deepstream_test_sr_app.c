@@ -41,7 +41,7 @@ GST_DEBUG_CATEGORY (NVDS_APP);
 #define OSD_PROCESS_MODE 1
 
 /* By default, OSD will not display text. To display text, change this to 1 */
-#define OSD_DISPLAY_TEXT 0
+#define OSD_DISPLAY_TEXT 1
 
 gint frame_number = 0;
 gchar pgie_classes_str[4][32] = { "Vehicle", "TwoWheeler", "Person",
@@ -170,6 +170,34 @@ smart_record_callback (NvDsSRRecordingInfo * info, gpointer userData)
   return NULL;
 }
 
+
+
+// static gboolean
+// smart_record_event_generator (gpointer data)
+// {
+//   NvDsSRSessionId sessId = 0;
+//   NvDsSRContext *ctx = (NvDsSRContext *) data;
+//   guint startTime = START_TIME;
+//   guint duration = SMART_REC_DURATION;
+//   if (ctx->recordOn) {
+//       g_print ("Recording done.\n");
+//       if (NvDsSRStop(ctx, 0) == NVDSSR_STATUS_OK)
+//           ctx->recordOn = FALSE;
+//       else
+//           g_printerr("Unable to stop recording\n");
+//   } else {
+//       g_print("Recording started..\n");
+//       NvDsSRStatus status = NvDsSRStart(ctx, &sessId, startTime, duration, NULL);
+//       if (status == NVDSSR_STATUS_OK)
+//           ctx->recordOn = TRUE;
+//       else
+//           g_printerr("Unable to start recording, status: %d\n", status);
+//   }
+//   return TRUE;
+// }
+
+
+
 static gboolean
 smart_record_event_generator (gpointer data)
 {
@@ -178,15 +206,23 @@ smart_record_event_generator (gpointer data)
   guint startTime = START_TIME;
   guint duration = SMART_REC_DURATION;
 
+  if (ctx == NULL) {
+        g_printerr("Error: nvdssrctx is NULL.\n");
+        return FALSE; // 유효하지 않은 ctx인 경우 종료
+    } else {
+        g_print("nvdssrctx is valid. RecordOn: %d\n", ctx->recordOn);
+    }
+
+
   if (ctx->recordOn) {
     g_print ("Recording done.\n");
     if (NvDsSRStop (ctx, 0) != NVDSSR_STATUS_OK)
       g_printerr ("Unable to stop recording\n");
   } else {
     g_print ("Recording started..\n");
-    if (NvDsSRStart (ctx, &sessId, startTime, duration,
-            NULL) != NVDSSR_STATUS_OK)
-      g_printerr ("Unable to start recording\n");
+    NvDsSRStatus status = NvDsSRStart(ctx, &sessId, startTime, duration, NULL);
+    if (status != NVDSSR_STATUS_OK)
+      g_printerr ("Unable to start recording, status: %d\n", status);
   }
   return TRUE;
 }
@@ -498,6 +534,7 @@ main (int argc, char *argv[])
   params.defaultDuration = SMART_REC_DEFAULT_DURATION;
   params.callback = smart_record_callback;
   params.fileNamePrefix = bbox_enabled ? "With_BBox" : "Without_BBox";
+  params.dirpath = "/workspace/sources/apps/sample_apps/deepstream-testsr/save";
 
   if (NvDsSRCreate (&nvdssrCtx, &params) != NVDSSR_STATUS_OK) {
     g_printerr ("Failed to create smart record bin");

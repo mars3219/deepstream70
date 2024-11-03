@@ -54,10 +54,10 @@ sink1:
   msg-conv-frame-interval: 30
   #To enable dummy payload
   #msg-conv-dummy-payload=1
-  msg-broker-proto-lib: /opt/nvidia/deepstream/deepstream/lib/libnvds_kafka_proto.so
+  msg-broker-proto-lib: /opt/nvidia/deepstream/deepstream-7.0/lib/libnvds_kafka_proto.so
   #Provide your msg-broker-conn-str here
-  msg-broker-conn-str: <host>;<port>;<topic>
-  topic: <topic>
+  msg-broker-conn-str: 127.0.0.1;9092
+  topic: ds_topic
   #Optional:
   #msg-broker-config: /opt/nvidia/deepstream/deepstream/sources/libs/kafka_protocol_adaptor/cfg_kafka.txt
   #new-api: 0

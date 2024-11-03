@@ -5,9 +5,20 @@
             "name": "Debug DeepStream App",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/deepstream-test1-app",  // 실행할 바이너리 경로
+            "program": "${fileDirname}/deepstream-testsr-app",  // 실행할 바이너리 경로
             "args": [
-                "${fileDirname}/dstest1_config.yml"
+                // "-c",
+                // "${fileDirname}/configs/test5_config_file_src_infer.yml",
+                // "${fileDirname}/configs/test5_dec_infer-resnet_tracker_sgie_tiled_display_int8.yml",
+                // "-p",
+                // "0",
+                // "rtsp://192.168.45.157:28550/h264_ulaw.sdp",
+                "rtsp://127.0.0.1:9000/stream",
+                "--enc-type=0",
+                "--sink-type=2",
+                "--bbox-enable=1",
+                "--sr-mode=0",
+                "--pgie-type=0"
             ],  // 필요시 프로그램 인자 추가
             "stopAtEntry": false,
             "cwd": "${fileDirname}",  // 현재 작업 디렉토리

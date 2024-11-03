@@ -52,10 +52,10 @@ sink1:
   #(256): PAYLOAD_RESERVED - Reserved type
   #(257): PAYLOAD_CUSTOM   - Custom schema payload
   msg-conv-payload-type: 0
-  msg-broker-proto-lib: /opt/nvidia/deepstream/deepstream/lib/libnvds_kafka_proto.so
+  msg-broker-proto-lib: /opt/nvidia/deepstream/deepstream-7.0/lib/libnvds_kafka_proto.so
   #Provide your msg-broker-conn-str here
-  msg-broker-conn-str: <host>;<port>;<topic>
-  topic: <topic>
+  msg-broker-conn-str: 127.0.0.1;9092
+  topic: ds_topic
   #Optional:
   #msg-broker-config: ../../deepstream-test4/cfg_kafka.txt
 

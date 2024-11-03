@@ -11,7 +11,7 @@
 ################################################################################
 
 sensor0:
-  enable: 1
+  enable: 0 
   type: Camera
   id: CAMERA_ID
   location: 45.293701447;-75.8303914499;48.1557479338
@@ -19,7 +19,7 @@ sensor0:
   coordinate: 5.2;10.1;11.2
 
 place0:
-  enable: 1
+  enable: 0
   id: 1
   type: garage
   name: XYZ
@@ -30,7 +30,7 @@ place0:
   place-sub-field3: P2
 
 place1:
-  enable: 1
+  enable: 0
   id: 1
   type: garage
   name: XYZ
@@ -41,7 +41,7 @@ place1:
   place-sub-field3: P2
 
 analytics0:
-  enable: 1
+  enable: 0
   id: XYZ
   description: "Vehicle Detection and License Plate Recognition"
   source: OpenALR
