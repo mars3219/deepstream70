@@ -25,8 +25,11 @@ LIB_INSTALL_DIR?=/opt/nvidia/deepstream/deepstream-$(NVDS_VERSION)/lib/
 APP_INSTALL_DIR?=/opt/nvidia/deepstream/deepstream-$(NVDS_VERSION)/bin/
 
 ifeq ($(TARGET_DEVICE),aarch64)
-  CFLAGS:= -DPLATFORM_TEGRA
+  CFLAGS:= -DPLATFORM_TEGRA -g
+else
+	CFLAGS:= -g
 endif
+
 
 SRCS:= $(wildcard *.c)
 
