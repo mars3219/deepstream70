@@ -5,7 +5,7 @@
             "name": "Debug DeepStream App",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/deepstream-user-metadata-app",  // 실행할 바이너리 경로
+            "program": "${fileDirname}/deepstream-gst-metadata-app",  // 실행할 바이너리 경로
             "args": [
                 // "-c",
                 "/opt/nvidia/deepstream/deepstream/samples/streams/sample_720p.h264",

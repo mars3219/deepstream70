@@ -25,7 +25,7 @@ tiled-display:
   nvbuf-memory-type: 0
 
 source:
-  csv-file-path: sources_rtsp.csv
+  csv-file-path: sources_4.csv
 
 sink0:
   enable: 1

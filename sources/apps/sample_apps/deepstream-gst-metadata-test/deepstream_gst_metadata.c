@@ -33,8 +33,8 @@
 /* The muxer output resolution must be set if the input streams will be of
  * different resolution. The muxer will scale all the input frames to this
  * resolution. */
-#define MUXER_OUTPUT_WIDTH 1920
-#define MUXER_OUTPUT_HEIGHT 1080
+#define MUXER_OUTPUT_WIDTH 640
+#define MUXER_OUTPUT_HEIGHT 360
 
 /* Muxer batch formation timeout, for e.g. 40 millisec. Should ideally be set
  * based on the fastest source's framerate. */
@@ -171,20 +171,20 @@ nvinfer_src_pad_buffer_probe (GstPad * pad, GstPadProbeInfo * info,
           if(user_meta->base_meta.meta_type == NVDS_DECODER_GST_META_EXAMPLE)
           {
             decoder_meta = (NvDecoderMeta *)user_meta->user_meta_data;
-            g_print("Dec Meta retrieved as NVDS USER METADTA For Frame_Num = %d  \n",
-                decoder_meta->frame_num);
-            g_print("Retrieved Decoder Metadata: frame type = %d, frame_num = %d decode_error_status = %d\n\n",
-                decoder_meta->frame_type, decoder_meta->frame_num,
-                decoder_meta->dec_err);
+            // g_print("Dec Meta retrieved as NVDS USER METADTA For Frame_Num = %d  \n",
+            //     decoder_meta->frame_num);
+            // g_print("Retrieved Decoder Metadata: frame type = %d, frame_num = %d decode_error_status = %d\n\n",
+            //     decoder_meta->frame_type, decoder_meta->frame_num,
+            //     decoder_meta->dec_err);
           }
 
           if(user_meta->base_meta.meta_type == NVDS_GST_META_BEFORE_DECODER_EXAMPLE)
           {
             h264parse_meta = (H264parseMeta *)user_meta->user_meta_data;
-            g_print("Parser Meta retrieved For Frame_Num = %d  \n",
-                h264parse_meta->parser_frame_num);
-            g_print("Retrieved Metadata attached before decoder: parsed frame_num = %d\n\n",
-                h264parse_meta->parser_frame_num);
+            // g_print("Parser Meta retrieved For Frame_Num = %d  \n",
+            //     h264parse_meta->parser_frame_num);
+            // g_print("Retrieved Metadata attached before decoder: parsed frame_num = %d\n\n",
+            //     h264parse_meta->parser_frame_num);
           }
         }
     }
@@ -209,6 +209,7 @@ h264parse_src_pad_buffer_probe (GstPad * pad, GstPadProbeInfo * info,
   {
     return GST_FLOW_ERROR;
   }
+
   /* Add dummy metadata */
   h264parse_meta->parser_frame_num = parsed_frame_number++;
 
@@ -226,9 +227,9 @@ h264parse_src_pad_buffer_probe (GstPad * pad, GstPadProbeInfo * info,
   /* Set release function to release the transformed nvds metadata */
   meta->gst_to_nvds_meta_release_func = h264parse_gst_nvds_meta_release_func;
 
-  g_print("GST H264parse Meta attached for Frame_Num = %d\n",
-      h264parse_meta->parser_frame_num);
-  g_print("Attached Metadata before decoder: Parsed frame_num = %d\n\n", h264parse_meta->parser_frame_num);
+  // g_print("GST H264parse Meta attached for Frame_Num = %d\n",
+  //     h264parse_meta->parser_frame_num);
+  // g_print("Attached Metadata before decoder: Parsed frame_num = %d\n\n", h264parse_meta->parser_frame_num);
 
   return GST_PAD_PROBE_OK;
 }
@@ -270,11 +271,11 @@ nvdecoder_src_pad_buffer_probe (GstPad * pad, GstPadProbeInfo * info,
   /* Set release function to release the transformed nvds metadata */
   meta->gst_to_nvds_meta_release_func = decoder_gst_nvds_meta_release_func;
 
-  g_print("GST Dec Meta attached with gst decoder output buffer for Frame_Num = %d\n",
-      decoder_meta->frame_num);
-  g_print("Attached decoder Metadata: frame type = %d, frame_num = %d decode_error_status = %d\n\n",
-      decoder_meta->frame_type, decoder_meta->frame_num,
-      decoder_meta->dec_err);
+  // g_print("GST Dec Meta attached with gst decoder output buffer for Frame_Num = %d\n",
+  //     decoder_meta->frame_num);
+  // g_print("Attached decoder Metadata: frame type = %d, frame_num = %d decode_error_status = %d\n\n",
+  //     decoder_meta->frame_type, decoder_meta->frame_num,
+  //     decoder_meta->dec_err);
 
   return GST_PAD_PROBE_OK;
 }

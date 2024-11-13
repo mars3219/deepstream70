@@ -1,3 +1,2 @@
 enable,type,uri,num-sources,gpu-id,nvbuf-memory-type
-1,4,rtsp://foo.com/stream1.mp4,1,0,0
-1,4,rtsp://foo.com/stream2.mp4,1,0,0
+1,4,rtsp://210.99.70.120:1935/live/cctv002.stream,1,0,0

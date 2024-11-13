@@ -17,8 +17,8 @@ application:
 
 tiled-display:
   enable: 1
-  rows: 2
-  columns: 2
+  rows: 7
+  columns: 7
   width: 1280
   height: 720
   gpu-id: 0
@@ -27,7 +27,7 @@ tiled-display:
   #(2): nvbuf-mem-cuda-device - Allocate Device cuda memory, applicable for Tesla
   #(3): nvbuf-mem-cuda-unified - Allocate Unified cuda memory, applicable for Tesla
   #(4): nvbuf-mem-surface-array - Allocate Surface Array memory, applicable for Jetson
-  nvbuf-memory-type: 0
+  nvbuf-memory-type: 2
 
 
 source:
@@ -117,13 +117,13 @@ streammux:
   gpu-id: 0
   ##Boolean property to inform muxer that sources are live
   live-source: 0
-  batch-size: 4
+  batch-size: 49
   ##time out in usec, to wait after the first buffer is available
   ##to push the batch even if the complete batch is not formed
   batched-push-timeout: 40000
   ## Set muxer output width and height
-  width: 1920
-  height: 1080
+  width: 1280
+  height: 720
   ##Enable to maintain aspect ratio wrt source, and allow black borders, works
   ##along with width, height properties
   enable-padding: 0
