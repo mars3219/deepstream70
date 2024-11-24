@@ -16,12 +16,16 @@ rest-server:
 server-app-ctx:
   #Use single uri in uri_list for server-app-ctx to start the sample application.
   #i.e. no comma separted uri's to be used)
-  uri_list: file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4
+  # uri-list: file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_720p.mp4
+  # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream,rtsp://210.99.70.120:1935/live/cctv016.stream,rtsp://210.99.70.120:1935/live/cctv017.stream,rtsp://210.99.70.120:1935/live/cctv018.stream,rtsp://210.99.70.120:1935/live/cctv019.stream,rtsp://210.99.70.120:1935/live/cctv020.stream,rtsp://210.99.70.120:1935/live/cctv021.stream,rtsp://210.99.70.120:1935/live/cctv022.stream,rtsp://210.99.70.120:1935/live/cctv023.stream,rtsp://210.99.70.120:1935/live/cctv024.stream,rtsp://210.99.70.120:1935/live/cctv025.stream,rtsp://210.99.70.120:1935/live/cctv026.stream,rtsp://210.99.70.120:1935/live/cctv027.stream,rtsp://210.99.70.120:1935/live/cctv028.stream,rtsp://210.99.70.120:1935/live/cctv029.stream,rtsp://210.99.70.120:1935/live/cctv030.stream,rtsp://210.99.70.120:1935/live/cctv031.stream
+  # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream
+  uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream
   httpIp: "localhost"
   httpPort: "9000"
-  pipeline_width: 1920
-  pipeline_height: 1080
-  maxBatchSize: 8
+  pipeline_width: 640
+  pipeline_height: 480
+  maxBatchSize: 4
+  # batched_push_timeout: 500000
   batched_push_timeout: 33333
   live_source: 1
   drop_pipeline_eos: 1
@@ -29,19 +33,24 @@ server-app-ctx:
 multiurisrcbin:
   #comma separated uri (no semicolon at the end). For ex- uri1,uri2,uriN
   #parsed inside nvmultiurisrcbin
-  uri-list: file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4
+  # uri-list: file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_720p.mp4
+  # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream
+  # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream,rtsp://210.99.70.120:1935/live/cctv016.stream,rtsp://210.99.70.120:1935/live/cctv017.stream,rtsp://210.99.70.120:1935/live/cctv018.stream,rtsp://210.99.70.120:1935/live/cctv019.stream,rtsp://210.99.70.120:1935/live/cctv020.stream,rtsp://210.99.70.120:1935/live/cctv021.stream,rtsp://210.99.70.120:1935/live/cctv022.stream,rtsp://210.99.70.120:1935/live/cctv023.stream,rtsp://210.99.70.120:1935/live/cctv024.stream,rtsp://210.99.70.120:1935/live/cctv025.stream,rtsp://210.99.70.120:1935/live/cctv026.stream,rtsp://210.99.70.120:1935/live/cctv027.stream,rtsp://210.99.70.120:1935/live/cctv028.stream,rtsp://210.99.70.120:1935/live/cctv029.stream,rtsp://210.99.70.120:1935/live/cctv030.stream,rtsp://210.99.70.120:1935/live/cctv031.stream
+  # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream
+  uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream
   port: 9000
   live-source: 1
-  width: 1920
-  height: 1080
+  width: 640
+  height: 480
+  # batched-push-timeout: 500000
   batched-push-timeout: 33333
-  max-batch-size: 8
+  max-batch-size: 4
   #To simulate nvvideoconvert specific REST APIs change disable-passthrough: 1
   disable-passthrough: 0
   drop-pipeline-eos: 1
   #Enable rtsp reconnections properties for rtsp source(s).
-  #rtsp-reconnect-interval: 5
-  #rtsp-reconnect-attempts: 3
+  # rtsp-reconnect-interval: 1
+  # rtsp-reconnect-attempts: 1000
   #To demonstrate the new nvstreammux config-file usage
   config-file-path: config_new_nvstreammux.txt
 
@@ -54,6 +63,7 @@ tiler:
   height: 720
 
 sink:
+  sync: 0
   qos: 0
 
 encoder:

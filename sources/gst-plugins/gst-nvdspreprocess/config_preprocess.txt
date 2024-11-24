@@ -85,3 +85,4 @@ custom-input-transformation-function=CustomAsyncTransformation
 process-on-roi=0
 draw-roi=0
 roi-params-src-3=0;540;900;500;960;0;900;500
+ 

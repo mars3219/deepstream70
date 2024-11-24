@@ -70,6 +70,6 @@ property:
   uff-input-order: 0
 
 class-attrs-all:
-  pre-cluster-threshold: 0.2
+  pre-cluster-threshold: 0.4
   topk: 20
   nms-iou-threshold: 0.5

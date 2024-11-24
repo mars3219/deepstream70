@@ -584,7 +584,7 @@ main (int argc, char *argv[])
   gst_element_set_state (appctx.pipeline, GST_STATE_PLAYING);
 
   /* Wait till pipeline encounters an error or EOS */
-  g_print ("Running...\n");
+  g_print ("Running!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1...\n");
 
   g_main_loop_run (loop);
 
