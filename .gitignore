@@ -1,7 +1,8 @@
 samples/streams/
 
-NV_DeepstreamSDK_Exercise/
+NV_DeepstreamSDK_Excercise/
 tests/
+gstreamer/
 
 **/*.mp4
 **/*.h264
