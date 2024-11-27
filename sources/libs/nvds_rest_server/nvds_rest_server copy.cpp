@@ -972,34 +972,6 @@ handleUpdateROI (const Json::Value & req_info, const Json::Value & in,
   return ret;
 }
 
-/* ---------------------------------------------------------------------------
-**  update stream uri handler
-** -------------------------------------------------------------------------*/
-NvDsServerStatusCode
-hadleUpdateStream (const Json::Value & req_info, const Json::Value & in,
-    Json::Value & response, struct mg_connection *conn,
-    std::function < void (NvDsServerStreamInfo * stream_ctx, void *ctx) > stream_cb,
-    std::string uri)
-{
-  NvDsServerStatusCode ret = NvDsServerStatusCode::StatusOk;
-  const std::string request_api =
-    req_info.get ("url", EMPTY_STRING).asString();
-  const std::string request_method =
-    req_info.get ("method", UNKNOWN_STRING).asString();
-  const std::string query_string =
-    req_info.get ("query", EMPTY_STRING).asString();
-
-  if (request_api.empty() || request_method == UNKNOWN_STRING) {
-    std::cout << "Malformed HTTP request" << std::endl;
-    return NvDsServerStatusCode::StatusBadRequest;
-  }
-
-  // if (iequals (request_method, "put")) {
-  //   NvDsServerStreamInfo 
-  // }
-}
-
-
 NvDsServerStatusCode
 handleAddStream (const Json::Value & req_info, const Json::Value & in,
     Json::Value & response, struct mg_connection *conn,

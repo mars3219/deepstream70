@@ -5,10 +5,11 @@
             "name": "Debug DeepStream App",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/deepstream-gst-metadata-app",  // 실행할 바이너리 경로
+            "program": "${fileDirname}/deepstream-server-app",  // 실행할 바이너리 경로
             "args": [
                 // "-c",
-                "/opt/nvidia/deepstream/deepstream/samples/streams/sample_720p.h264",
+                "${fileDirname}/dsserver_config.yml"
+                // "/opt/nvidia/deepstream/deepstream/samples/streams/sample_720p.h264",
                 // "${fileDirname}/configs/test5_config_file_src_infer.yml",
                 // "${fileDirname}/configs/test5_dec_infer-resnet_tracker_sgie_tiled_display_int8.yml",
                 // "-p",

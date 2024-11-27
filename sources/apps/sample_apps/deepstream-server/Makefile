@@ -26,6 +26,9 @@ NVDS_VERSION:=7.0
 LIB_INSTALL_DIR?=/opt/nvidia/deepstream/deepstream-$(NVDS_VERSION)/lib/
 APP_INSTALL_DIR?=/opt/nvidia/deepstream/deepstream-$(NVDS_VERSION)/bin/
 
+# LIB_INSTALL_DIR?=/workspace/sources/libs
+# APP_INSTALL_DIR?=/workspace/sources/apps/sample_apps
+
 SRCS:= $(wildcard *.cpp)
 
 INCS:= $(wildcard *.h) \
@@ -37,7 +40,7 @@ OBJS:= $(SRCS:.cpp=.o)
 CFLAGS+= -I../../../includes \
 	 -I../../apps-common/includes \
          -I /usr/local/cuda-$(CUDA_VER)/include \
-	 -I/usr/include/jsoncpp
+	 -I/usr/include/jsoncpp -g
 
 CFLAGS+= $(shell pkg-config --cflags $(PKGS))
 

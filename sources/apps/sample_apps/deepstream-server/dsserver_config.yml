@@ -11,15 +11,15 @@
 ################################################################################
 
 rest-server:
-  within_multiurisrcbin: 1
+  within_multiurisrcbin: 0
 
 server-app-ctx:
   #Use single uri in uri_list for server-app-ctx to start the sample application.
   #i.e. no comma separted uri's to be used)
-  # uri-list: file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_720p.mp4
-  # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream,rtsp://210.99.70.120:1935/live/cctv016.stream,rtsp://210.99.70.120:1935/live/cctv017.stream,rtsp://210.99.70.120:1935/live/cctv018.stream,rtsp://210.99.70.120:1935/live/cctv019.stream,rtsp://210.99.70.120:1935/live/cctv020.stream,rtsp://210.99.70.120:1935/live/cctv021.stream,rtsp://210.99.70.120:1935/live/cctv022.stream,rtsp://210.99.70.120:1935/live/cctv023.stream,rtsp://210.99.70.120:1935/live/cctv024.stream,rtsp://210.99.70.120:1935/live/cctv025.stream,rtsp://210.99.70.120:1935/live/cctv026.stream,rtsp://210.99.70.120:1935/live/cctv027.stream,rtsp://210.99.70.120:1935/live/cctv028.stream,rtsp://210.99.70.120:1935/live/cctv029.stream,rtsp://210.99.70.120:1935/live/cctv030.stream,rtsp://210.99.70.120:1935/live/cctv031.stream
-  # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream
-  uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream
+  # uri_list: file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_720p.mp4
+  # uri_list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream,rtsp://210.99.70.120:1935/live/cctv016.stream,rtsp://210.99.70.120:1935/live/cctv017.stream,rtsp://210.99.70.120:1935/live/cctv018.stream,rtsp://210.99.70.120:1935/live/cctv019.stream,rtsp://210.99.70.120:1935/live/cctv020.stream,rtsp://210.99.70.120:1935/live/cctv021.stream,rtsp://210.99.70.120:1935/live/cctv022.stream,rtsp://210.99.70.120:1935/live/cctv023.stream,rtsp://210.99.70.120:1935/live/cctv024.stream,rtsp://210.99.70.120:1935/live/cctv025.stream,rtsp://210.99.70.120:1935/live/cctv026.stream,rtsp://210.99.70.120:1935/live/cctv027.stream,rtsp://210.99.70.120:1935/live/cctv028.stream,rtsp://210.99.70.120:1935/live/cctv029.stream,rtsp://210.99.70.120:1935/live/cctv030.stream,rtsp://210.99.70.120:1935/live/cctv031.stream
+  # uri_list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream
+  uri_list: rtsp://210.99.70.120:1935/live/cctv007.stream
   httpIp: "localhost"
   httpPort: "9000"
   pipeline_width: 640

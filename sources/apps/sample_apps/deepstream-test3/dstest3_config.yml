@@ -12,7 +12,8 @@
 
 source-list:
   #semicolon separated uri. For ex- uri1;uri2;uriN;
-  list: file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;
+  # list: file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_1080p_h264.mp4;
+  list: rtsp://210.99.70.120:1935/live/cctv007.stream
   
 streammux:
   batch-size: 1
@@ -29,6 +30,7 @@ tiler:
   height: 720
 
 sink:
+  sync: 0
   qos: 0
 
 # Inference using nvinfer:
