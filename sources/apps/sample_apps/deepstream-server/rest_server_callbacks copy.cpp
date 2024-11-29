@@ -703,9 +703,6 @@ s_stream_callback_impl (NvDsServerStreamInfo * stream_info, void *ctx)
       }
       g_print ("sensor id don't exist \n");
 
-
-
-
       /** Add the source */
       serverappctx->config.uri = (gchar *) stream_info->value_camera_url.c_str ();
       serverappctx->config.sensorId =
@@ -746,10 +743,6 @@ s_stream_callback_impl (NvDsServerStreamInfo * stream_info, void *ctx)
           nvmultiurisrcbinCreator,
           stream_info->value_camera_url.c_str (),
           stream_info->value_camera_id.c_str ());
-
-
-
-
       if (sourceConfig) {
         /* Remove the source */
         gboolean ret =
