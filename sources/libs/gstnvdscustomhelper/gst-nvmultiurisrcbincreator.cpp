@@ -1311,6 +1311,31 @@ gst_nvmultiurisrcbincreator_get_source_config (NvDst_Handle_NvMultiUriSrcCreator
   return config;
 }
 
+
+GstDsNvUriSrcConfig *
+gst_nvmultiurisrcbincreator_get_source_update_config (NvDst_Handle_NvMultiUriSrcCreator
+    apiHandle, gchar const *sensorId)
+{
+  NvMultiUriSrcBinCreator *nvmultiurisrcbinCreator =
+      (NvMultiUriSrcBinCreator *) apiHandle;
+  GstDsNvUriSrcConfig *config = NULL;
+  g_mutex_lock (&nvmultiurisrcbinCreator->lock);
+  /** Go through the list and find it */
+  for (GList * node = nvmultiurisrcbinCreator->sourceInfoList; node;
+      node = g_list_next (node)) {
+    NvDsUriSourceInfo *sourceInfo = (NvDsUriSourceInfo *) (node->data);
+    if (sourceInfo->config->sensorId
+        && (g_strcmp0 (sourceInfo->config->sensorId, sensorId) == 0)) {
+      config = gst_nvmultiurisrcbincreator_src_config_dup (sourceInfo->config);
+      break;
+    }
+  }
+  g_mutex_unlock (&nvmultiurisrcbinCreator->lock);
+  return config;
+}
+
+
+
 GstDsNvUriSrcConfig *gst_nvmultiurisrcbincreator_get_source_config_by_sensorid
     (NvDst_Handle_NvMultiUriSrcCreator apiHandle, gchar const *sensorId)
 {

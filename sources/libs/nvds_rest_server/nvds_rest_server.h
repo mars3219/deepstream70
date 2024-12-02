@@ -94,6 +94,8 @@ typedef enum
   STREAM_ADD_FAIL,
   STREAM_REMOVE_SUCCESS,
   STREAM_REMOVE_FAIL,
+  STREAM_UPDATE_SUCCESS,
+  STREAM_UPDATE_FAIL
 } NvDsServerStreamStatus;
 
 typedef enum

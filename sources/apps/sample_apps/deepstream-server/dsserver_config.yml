@@ -23,7 +23,7 @@ server-app-ctx:
   httpIp: "localhost"
   httpPort: "9000"
   pipeline_width: 640
-  pipeline_height: 480
+  pipeline_height: 360
   maxBatchSize: 4
   # batched_push_timeout: 500000
   batched_push_timeout: 33333
@@ -41,7 +41,7 @@ multiurisrcbin:
   port: 9000
   live-source: 1
   width: 640
-  height: 480
+  height: 360
   # batched-push-timeout: 500000
   batched-push-timeout: 33333
   max-batch-size: 4

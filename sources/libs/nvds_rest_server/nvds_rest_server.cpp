@@ -103,6 +103,13 @@ handleAddStream (const Json::Value & req_info, const Json::Value & in,
     std::function < void (NvDsServerStreamInfo * stream_ctx, void *ctx) > stream_cb,
     std::string uri);
 
+/* 채널 추가 API */
+NvDsServerStatusCode
+handleUpdateStream (const Json::Value & req_info, const Json::Value & in,
+    Json::Value & response, struct mg_connection *conn,
+    std::function < void (NvDsServerStreamInfo * stream_ctx, void *ctx) > stream_cb,
+    std::string uri);
+
 NvDsServerStatusCode
 handleRemoveStream (const Json::Value & req_info, const Json::Value & in,
     Json::Value & response, struct mg_connection *conn,
@@ -976,7 +983,7 @@ handleUpdateROI (const Json::Value & req_info, const Json::Value & in,
 **  update stream uri handler
 ** -------------------------------------------------------------------------*/
 NvDsServerStatusCode
-hadleUpdateStream (const Json::Value & req_info, const Json::Value & in,
+handleUpdateStream (const Json::Value & req_info, const Json::Value & in,
     Json::Value & response, struct mg_connection *conn,
     std::function < void (NvDsServerStreamInfo * stream_ctx, void *ctx) > stream_cb,
     std::string uri)
@@ -994,11 +1001,34 @@ hadleUpdateStream (const Json::Value & req_info, const Json::Value & in,
     return NvDsServerStatusCode::StatusBadRequest;
   }
 
-  // if (iequals (request_method, "put")) {
-  //   NvDsServerStreamInfo 
-  // }
-}
+  if (iequals (request_method, "get")) {
 
+  }
+
+  if (iequals (request_method, "post")) {
+
+    NvDsServerStreamInfo stream_info = { };
+    NvDsServerResponseInfo res_info = { };
+    std::pair < int, std::string > http_err_code(0,"");
+    stream_info.uri = uri;
+
+    void *custom_ctx = NULL;
+
+    if (nvds_rest_stream_parse (in, &stream_info) && (stream_cb)) {
+      stream_cb (&stream_info, &custom_ctx);
+      http_err_code = NvDsServerStatusCodeToHttpStatusCode(stream_info.err_info.code);
+    } else {
+      http_err_code = NvDsServerStatusCodeToHttpStatusCode(stream_info.err_info.code);
+    }
+    res_info.status = std::string ("HTTP/1.1 ") + std::to_string (http_err_code.first) +
+          " " + http_err_code.second;
+    res_info.reason = stream_info.stream_log;
+
+    response["status"] = res_info.status;
+    response["reason"] = res_info.reason;
+  }
+  return ret;
+}
 
 NvDsServerStatusCode
 handleAddStream (const Json::Value & req_info, const Json::Value & in,
@@ -1206,7 +1236,7 @@ nvds_rest_server_start (NvDsServerConfig * server_config,
       "/api/v1/stream/remove", "v1"}
   );
   m_versions.insert ( {
-      "/api/v1/roi/update", "v1"}
+      "/api/v1/stream/update", "v1"}
   );
   m_versions.insert ( {
       "/api/v1/dec/drop-frame-interval", "v1"}
@@ -1290,6 +1320,14 @@ nvds_rest_server_start (NvDsServerConfig * server_config,
           const Json::Value & in, Json::Value & out,
           struct mg_connection * conn) {
         return handleRemoveStream (req_info, in, out, conn, stream_cb, uri);
+      };
+    } else if (uri.find ("/stream/update") != std::string::npos) {
+      /* Stream Management Specific */
+      m_func[uri] =
+          [stream_cb, uri] (const Json::Value & req_info,
+          const Json::Value & in, Json::Value & out,
+          struct mg_connection * conn) {
+        return handleUpdateStream (req_info, in, out, conn, stream_cb, uri);
       };
     } else if (uri.find ("/stream/get-stream-info") != std::string::npos) {
       /* GET Requests Specific */

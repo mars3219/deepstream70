@@ -210,6 +210,11 @@ extern "C"
       (NvDst_Handle_NvMultiUriSrcCreator apiHandle, gchar const *uri,
       gchar const *sensorId);
 
+  GstDsNvUriSrcConfig
+      *gst_nvmultiurisrcbincreator_get_source_update_config
+      (NvDst_Handle_NvMultiUriSrcCreator
+            apiHandle, gchar const *sensorId);
+
 
 /**
  * API to create duplicate of GstDsNvUriSrcConfig

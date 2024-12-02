@@ -329,7 +329,8 @@ main (int argc, char *argv[])
 
     GstDsNvUriSrcConfig sourceConfig;
     memset(&sourceConfig, 0, sizeof(GstDsNvUriSrcConfig));
-    sourceConfig.sensorId = NULL;
+    // sourceConfig.sensorId = NULL;
+    sourceConfig.sensorId = "ch01";
     sourceConfig.uri = appctx.uri_list;
     sourceConfig.source_id = 0;
     sourceConfig.disable_passthrough = TRUE;

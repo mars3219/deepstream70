@@ -690,7 +690,7 @@ s_stream_callback_impl (NvDsServerStreamInfo * stream_info, void *ctx)
       GstDsNvUriSrcConfig *sourceConfig = NULL;
       if ((sourceConfig =
               gst_nvmultiurisrcbincreator_get_source_config_by_sensorid
-              (serverappctx->nvmultiurisrcbinCreator,
+              (serverappctx->nvmultiurisrcbinCreator,                                                                        
                   stream_info->value_camera_id.c_str ()))) {
         g_print ("Failed to add sensor id=[%s]; Already added\n",
             stream_info->value_camera_id.c_str ());
@@ -702,9 +702,6 @@ s_stream_callback_impl (NvDsServerStreamInfo * stream_info, void *ctx)
         return;
       }
       g_print ("sensor id don't exist \n");
-
-
-
 
       /** Add the source */
       serverappctx->config.uri = (gchar *) stream_info->value_camera_url.c_str ();
@@ -746,10 +743,6 @@ s_stream_callback_impl (NvDsServerStreamInfo * stream_info, void *ctx)
           nvmultiurisrcbinCreator,
           stream_info->value_camera_url.c_str (),
           stream_info->value_camera_id.c_str ());
-
-
-
-
       if (sourceConfig) {
         /* Remove the source */
         gboolean ret =
@@ -773,6 +766,60 @@ s_stream_callback_impl (NvDsServerStreamInfo * stream_info, void *ctx)
         }
       } else {
         g_print ("No record found; Failed to remove sensor id=[%s] uri=[%s]\n",
+            stream_info->value_camera_id.c_str (),
+            stream_info->value_camera_url.c_str ());
+      }
+    }  
+      /* update api*/
+      else if (g_strrstr (stream_info->value_change.c_str (), "update")) {
+      g_print ("stream_info->value_change is stream update \n");
+      /* First, find the GstDsNvUriSrcConfig object from nvmultiurisrcbinCreator
+         for the provided sensorId and uri */
+      GstDsNvUriSrcConfig const *sourceConfig =
+          gst_nvmultiurisrcbincreator_get_source_update_config (serverappctx->
+          nvmultiurisrcbinCreator,
+          stream_info->value_camera_id.c_str ());
+      if (sourceConfig) {
+        /* Update the source by removing and adding source */
+
+        /* Remove the source */
+        gboolean ret_remove =
+            gst_nvmultiurisrcbincreator_remove_source (serverappctx->
+            nvmultiurisrcbinCreator,
+            sourceConfig->source_id);
+
+        /** Add the source */
+        serverappctx->config.uri = (gchar *) stream_info->value_camera_url.c_str ();
+        serverappctx->config.sensorId =
+            (gchar *) stream_info->value_camera_id.c_str ();
+        serverappctx->config.sensorName =
+            (gchar *) stream_info->value_camera_name.c_str ();
+        serverappctx->config.source_id = sourceConfig->source_id;
+
+        g_print ("Adding source now \n");
+        gboolean ret =
+            gst_nvmultiurisrcbincreator_add_source (serverappctx->
+            nvmultiurisrcbinCreator, &serverappctx->config);
+        if (ret == FALSE) {
+          g_print ("Failed to update sensor id=[%s] uri=[%s]\n",
+              serverappctx->config.sensorId, serverappctx->config.uri);
+          stream_info->status = STREAM_UPDATE_FAIL;
+          stream_info->stream_log = "STREAM_UPDATE_FAIL, Failed to update source stream";
+          stream_info->err_info.code = StatusInternalServerError;
+        } else {
+          g_print ("Successfully updated sensor id=[%s] uri=[%s]\n",
+              serverappctx->config.sensorId, serverappctx->config.uri);
+          stream_info->status = STREAM_UPDATE_SUCCESS;
+          stream_info->err_info.code = StatusOk;
+          stream_info->stream_log = "STREAM_UPDATE_SUCCESS";
+        }
+        gst_nvmultiurisrcbincreator_sync_children_states (serverappctx->
+            nvmultiurisrcbinCreator);
+        /** clean the config place-holders that we change for each source */
+        serverappctx->config.uri = NULL;
+        serverappctx->config.sensorId = NULL;
+      } else {
+        g_print ("No record found; Failed to update sensor id=[%s] uri=[%s]\n",
             stream_info->value_camera_id.c_str (),
             stream_info->value_camera_url.c_str ());
       }

@@ -26,9 +26,6 @@ NVDS_VERSION:=7.0
 LIB_INSTALL_DIR?=/opt/nvidia/deepstream/deepstream-$(NVDS_VERSION)/lib/
 APP_INSTALL_DIR?=/opt/nvidia/deepstream/deepstream-$(NVDS_VERSION)/bin/
 
-# LIB_INSTALL_DIR?=/workspace/sources/libs
-# APP_INSTALL_DIR?=/workspace/sources/apps/sample_apps
-
 SRCS:= $(wildcard *.cpp)
 
 INCS:= $(wildcard *.h) \

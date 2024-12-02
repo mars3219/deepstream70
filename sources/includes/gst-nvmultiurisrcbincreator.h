@@ -209,6 +209,11 @@ extern "C"
       *gst_nvmultiurisrcbincreator_get_source_config
       (NvDst_Handle_NvMultiUriSrcCreator apiHandle, gchar const *uri,
       gchar const *sensorId);
+      
+  GstDsNvUriSrcConfig
+      *gst_nvmultiurisrcbincreator_get_source_update_config
+      (NvDst_Handle_NvMultiUriSrcCreator
+            apiHandle, gchar const *sensorId);
 
 
 /**

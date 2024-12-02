@@ -29,7 +29,7 @@ CFLAGS+= -fPIC -DDS_VERSION=\"7.0.0\" \
  	 -I../../includes \
 	 -I../../apps/apps-common/includes/ \
  	 -I/usr/local/cuda-$(CUDA_VER)/include \
-	 -I/usr/include/jsoncpp
+	 -I/usr/include/jsoncpp -g
 
 LIBS := -shared -Wl,-no-undefined \
  	-L/usr/local/cuda-$(CUDA_VER)/lib64/ -lcudart \

@@ -56,40 +56,29 @@ nvds_rest_stream_parse (const Json::Value & in, NvDsServerStreamInfo * stream_in
                   EMPTY_STRING).asString ().c_str ();
               stream_info->value_change =
                   sub_root_val.get ("change", EMPTY_STRING).asString ().c_str ();
-
               if (stream_info->value_camera_url == "") {
-                if (stream_info->value_change.find ("add") != std::string::npos) {
-                  stream_info->status = STREAM_ADD_FAIL;
-                  stream_info->stream_log = "STREAM_ADD_FAIL, Source url empty";
-                } else if (stream_info->value_change.find ("remove") != std::string::npos)
-                {
-                  stream_info->status = STREAM_REMOVE_FAIL;
-                  stream_info->stream_log = "STREAM_REMOVE_FAIL, Source url empty";
-                } else if (stream_info->value_change.find ("update") != std::string::npos)
-                {
-                  stream_info->status = STREAM_UPDATE_FAIL;
-                  stream_info->stream_log = "STREAM_UPDATE_FAIL, Source url empty";
-                } 
+                stream_info->status =
+                    stream_info->value_change.find ("add") !=
+                    std::string::npos ? STREAM_ADD_FAIL : STREAM_REMOVE_FAIL;
+                stream_info->stream_log = stream_info->status == STREAM_ADD_FAIL ?
+                                          "STREAM_ADD_FAIL, Source url empty" :
+                                          "STREAM_REMOVE_FAIL, Source url empty" ;
                 stream_info->err_info.code = StatusBadRequest;
                 return false;
               }
               if (stream_info->value_camera_id == "") {
-                if (stream_info->value_change.find ("add") != std::string::npos) {
-                  stream_info->status = STREAM_ADD_FAIL;
-                  stream_info->stream_log = "STREAM_ADD_FAIL, Source url empty";
-                } else if (stream_info->value_change.find ("remove") != std::string::npos)
-                {
-                  stream_info->status = STREAM_REMOVE_FAIL;
-                  stream_info->stream_log = "STREAM_REMOVE_FAIL, Source url empty";
-                } else if (stream_info->value_change.find ("update") != std::string::npos)
-                {
-                  stream_info->status = STREAM_UPDATE_FAIL;
-                  stream_info->stream_log = "STREAM_UPDATE_FAIL, Source url empty";
-                } 
+                stream_info->status =
+                    stream_info->value_change.find ("add") !=
+                    std::string::npos ? STREAM_ADD_FAIL : STREAM_REMOVE_FAIL;
+                stream_info->stream_log = stream_info->status == STREAM_ADD_FAIL ?
+                                          "STREAM_ADD_FAIL, Source id empty" :
+                                          "STREAM_REMOVE_FAIL, Source id empty" ;
                 stream_info->err_info.code = StatusBadRequest;
                 return false;
               }
             }
+
+
           }
         }
         if (root_val == "headers") {
@@ -105,16 +94,9 @@ nvds_rest_stream_parse (const Json::Value & in, NvDsServerStreamInfo * stream_in
         }
       } catch (const std::exception& e) {
             // Error handling: other exceptions
-            stream_info->stream_log = "STREAM ADD/REMOVE/UPDATE_FAIL, error: " + std::string(e.what());
-            if (stream_info->value_change.find ("add") != std::string::npos) {
-                stream_info->status = STREAM_ADD_FAIL;
-              } else if (stream_info->value_change.find ("remove") != std::string::npos)
-              {
-                stream_info->status = STREAM_REMOVE_FAIL;
-              } else if (stream_info->value_change.find ("update") != std::string::npos)
-              {
-                stream_info->status = STREAM_UPDATE_FAIL;
-              }  
+            stream_info->stream_log = "STREAM ADD/REMOVE_FAIL, error: " + std::string(e.what());
+            stream_info->status = stream_info->value_change.find ("add") !=
+                    std::string::npos ? STREAM_ADD_FAIL : STREAM_REMOVE_FAIL;
             stream_info->err_info.code = StatusBadRequest;
             return false;
       }
