@@ -9,7 +9,7 @@
  * without an express license agreement from NVIDIA CORPORATION or
  * its affiliates is strictly prohibited.
  */
-
+#include <iostream>
 #include "nvds_rest_server.h"
 #include "gst-nvmultiurisrcbincreator.h"
 #include "gst-nvcustomevent.h"

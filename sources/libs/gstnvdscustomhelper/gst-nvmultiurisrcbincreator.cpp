@@ -10,6 +10,7 @@
  * its affiliates is strictly prohibited.
  */
 
+#include <iostream>
 #include "gst-nvmultiurisrcbincreator.h"
 #include "gst-nvdscustommessage.h"
 #include "nvds_rest_server.h"
@@ -1156,7 +1157,6 @@ s_nvmultiurisrcbincreator_remove_source_impl (NvDst_Handle_NvMultiUriSrcCreator
     g_mutex_unlock (&nvmultiurisrcbinCreator->lock);
     return FALSE;
   }
-
   LOGD ("removing source %d\n", sourceId);
   //Removing handlers from g_signal_connect() calls
   s_nvmultiurisrcbincreator_remove_source_info_handlers (sourceInfo);
@@ -1312,6 +1312,8 @@ gst_nvmultiurisrcbincreator_get_source_config (NvDst_Handle_NvMultiUriSrcCreator
 }
 
 
+
+/* nhs code */
 GstDsNvUriSrcConfig *
 gst_nvmultiurisrcbincreator_get_source_update_config (NvDst_Handle_NvMultiUriSrcCreator
     apiHandle, gchar const *sensorId)
@@ -1333,6 +1335,130 @@ gst_nvmultiurisrcbincreator_get_source_update_config (NvDst_Handle_NvMultiUriSrc
   g_mutex_unlock (&nvmultiurisrcbinCreator->lock);
   return config;
 }
+
+/* nhs code */
+gboolean
+gst_nvmultiurisrcbincreator_update_source (NvDst_Handle_NvMultiUriSrcCreator apiHandle, 
+    GstDsNvUriSrcConfig * sourceConfig, gboolean forceSourceStateChange)
+{
+  guint sourceId = sourceConfig->source_id;
+  const gchar *newUri = sourceConfig->uri;
+
+  GstStateChangeReturn state_return = GST_STATE_CHANGE_FAILURE;
+  NvMultiUriSrcBinCreator *nvmultiurisrcbinCreator = 
+      (NvMultiUriSrcBinCreator *) apiHandle;
+  g_mutex_lock(&nvmultiurisrcbinCreator->lock);
+  
+  // Find the source for the provided sensorId and uri
+  NvDsUriSourceInfo *sourceInfo = 
+      (NvDsUriSourceInfo *) 
+      g_hash_table_lookup (nvmultiurisrcbinCreator->sourceInfoHash, 
+      sourceId + (gchar *) NULL);
+  
+  if (!sourceInfo) {
+      //No source found
+      g_mutex_unlock(&nvmultiurisrcbinCreator->lock);
+      return FALSE;
+  }
+  LOGD("Changing RTSP URI for source %d\n", sourceId);
+
+  //Removing handlers from g_signal_connect() calls
+  s_nvmultiurisrcbincreator_remove_source_info_handlers (sourceInfo);
+
+  //Removing probes that were added:
+  //Remove the EOS handling probe; stream is removed over the API call than EOS
+  if (sourceInfo->uribin_src_pad && GST_IS_PAD (sourceInfo->uribin_src_pad)) {
+    /** Note: Removing this probe will ensure the forced EOS
+     * to not trigger a call to: s_nvmultiurisrcbincreator_probe_func_eos_handling
+     */
+    if (sourceInfo->probe_eos_handling) {
+      gst_pad_remove_probe (sourceInfo->uribin_src_pad,
+          sourceInfo->probe_eos_handling);
+    }
+    sourceInfo->probe_eos_handling = 0;
+    /* Note: we shall not gst_object_unref(sourceInfo->uribin_src_pad);
+     * GStreamer warns:
+     * Trying to dispose object "a/vsrc_0", but it still has a parent
+     * "dsnvurisrcbin1".
+     * You need to let the parent manage the object instead of unreffing
+     * the object directly.
+     */
+  }
+
+  if (forceSourceStateChange) {
+  GstElement *uribin = sourceInfo->uribin;
+  //set uribin state to NULL
+  if (GST_IS_BIN (uribin)
+      && (state_return = gst_element_set_state (uribin, GST_STATE_NULL)) ==
+      GST_STATE_CHANGE_FAILURE) {
+    GST_WARNING_OBJECT (nvmultiurisrcbinCreator->nvmultiurisrcbin,
+        "Failed to set stop source-id:%u", sourceId);
+    g_mutex_unlock (&nvmultiurisrcbinCreator->lock);
+    return FALSE;
+  }
+  //release nvstreammux sink pad
+  if (GST_IS_PAD (sourceInfo->muxSinkPad)) {
+    gst_pad_send_event (sourceInfo->muxSinkPad,
+        gst_event_new_flush_stop (FALSE));
+    gst_pad_send_event (sourceInfo->muxSinkPad, gst_event_new_eos ());
+    gst_element_release_request_pad (nvmultiurisrcbinCreator->streammux,
+        sourceInfo->muxSinkPad);
+    gst_object_unref (sourceInfo->muxSinkPad);
+    sourceInfo->muxSinkPad = NULL;
+  }
+  //remove uribin from nvmultiurisrcbin
+  if ((state_return == GST_STATE_CHANGE_SUCCESS
+          || state_return == GST_STATE_CHANGE_ASYNC)
+      && !gst_bin_remove (GST_BIN (nvmultiurisrcbinCreator->nvmultiurisrcbin),
+          uribin)) {
+    GST_WARNING_OBJECT (nvmultiurisrcbinCreator->nvmultiurisrcbin,
+        "Failed to set remove source-id:%u", sourceId);
+    g_mutex_unlock (&nvmultiurisrcbinCreator->lock);
+    return FALSE;
+  }
+  sourceInfo->uribin = NULL;
+}
+
+// Create a new uribin with updated URI
+GstElement *new_uribin = gst_element_factory_make("nvurisrcbin", NULL);
+if (!new_uribin) {
+    g_print("asdfadfasdfasdf");
+    GST_WARNING_OBJECT (nvmultiurisrcbinCreator->nvmultiurisrcbin,
+        "Could not create element 'nvurisrcbin'");
+    g_mutex_unlock (&nvmultiurisrcbinCreator->lock);
+    return FALSE;
+}
+
+g_object_set(G_OBJECT(new_uribin), "uri", newUri, NULL);
+
+// Add new uribin to the pipeline
+if (!gst_bin_add(GST_BIN(nvmultiurisrcbinCreator->nvmultiurisrcbin), new_uribin)) {
+    GST_ERROR("Failed to add new uribin to bin");
+    g_print("11111111111111111");
+    gst_object_unref(new_uribin);
+    return FALSE;
+}
+
+// Link the new uribin to nvstreammux
+sourceInfo->muxSinkPad = gst_element_get_request_pad(nvmultiurisrcbinCreator->streammux, "sink_%u");
+GstPad *uribin_src_pad = gst_element_get_static_pad(new_uribin, "src");
+if (gst_pad_link(uribin_src_pad, sourceInfo->muxSinkPad) != GST_PAD_LINK_OK) {
+    GST_ERROR("Failed to link new uribin to nvstreammux");
+    gst_object_unref(uribin_src_pad);
+    g_print("22222222222222222");
+    return FALSE;
+}
+gst_object_unref(uribin_src_pad);
+
+// Set the new uribin to PLAYING state
+gst_element_set_state(new_uribin, GST_STATE_PLAYING);
+sourceInfo->uribin = new_uribin;
+
+g_mutex_unlock (&nvmultiurisrcbinCreator->lock);
+
+return TRUE;
+}
+
 
 
 

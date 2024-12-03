@@ -404,7 +404,7 @@ main (int argc, char *argv[])
 
   appctx.nvdslogger = gst_element_factory_make ("nvdslogger", "nvdslogger");
   g_object_set (G_OBJECT (appctx.nvdslogger),
-      "fps-measurement-interval-sec", 1, NULL);
+      "fps-measurement-interval-sec", 120, NULL);
 
 
   /* Use nvtiler to composite the batched frames into a 2D tiled array based

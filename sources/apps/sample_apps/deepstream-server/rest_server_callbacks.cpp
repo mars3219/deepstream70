@@ -780,15 +780,7 @@ s_stream_callback_impl (NvDsServerStreamInfo * stream_info, void *ctx)
           nvmultiurisrcbinCreator,
           stream_info->value_camera_id.c_str ());
       if (sourceConfig) {
-        /* Update the source by removing and adding source */
-
-        /* Remove the source */
-        gboolean ret_remove =
-            gst_nvmultiurisrcbincreator_remove_source (serverappctx->
-            nvmultiurisrcbinCreator,
-            sourceConfig->source_id);
-
-        /** Add the source */
+        /* Update the source */
         serverappctx->config.uri = (gchar *) stream_info->value_camera_url.c_str ();
         serverappctx->config.sensorId =
             (gchar *) stream_info->value_camera_id.c_str ();
@@ -796,10 +788,13 @@ s_stream_callback_impl (NvDsServerStreamInfo * stream_info, void *ctx)
             (gchar *) stream_info->value_camera_name.c_str ();
         serverappctx->config.source_id = sourceConfig->source_id;
 
-        g_print ("Adding source now \n");
-        gboolean ret =
-            gst_nvmultiurisrcbincreator_add_source (serverappctx->
-            nvmultiurisrcbinCreator, &serverappctx->config);
+        g_print ("Updating source now \n");
+
+        gboolean ret = 
+            gst_nvmultiurisrcbincreator_update_source (serverappctx->
+            nvmultiurisrcbinCreator, &serverappctx->config,
+            TRUE);
+
         if (ret == FALSE) {
           g_print ("Failed to update sensor id=[%s] uri=[%s]\n",
               serverappctx->config.sensorId, serverappctx->config.uri);
@@ -823,7 +818,8 @@ s_stream_callback_impl (NvDsServerStreamInfo * stream_info, void *ctx)
             stream_info->value_camera_id.c_str (),
             stream_info->value_camera_url.c_str ());
       }
-    } else {
+    } 
+    else {
       g_print ("stream_info->value_change string not supported \n");
       stream_info->stream_log = "Sensor API change string not supported";
       stream_info->err_info.code = StatusBadRequest;

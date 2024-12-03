@@ -209,11 +209,18 @@ extern "C"
       *gst_nvmultiurisrcbincreator_get_source_config
       (NvDst_Handle_NvMultiUriSrcCreator apiHandle, gchar const *uri,
       gchar const *sensorId);
-      
+
+/* nhs code */    
   GstDsNvUriSrcConfig
       *gst_nvmultiurisrcbincreator_get_source_update_config
       (NvDst_Handle_NvMultiUriSrcCreator
             apiHandle, gchar const *sensorId);
+
+/* nhs code */
+  gboolean
+      gst_nvmultiurisrcbincreator_update_source 
+      (NvDst_Handle_NvMultiUriSrcCreator apiHandle, 
+        GstDsNvUriSrcConfig * sourceConfig, gboolean forceSourceStateChange);
 
 
 /**
