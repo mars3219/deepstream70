@@ -20,9 +20,8 @@ server-app-ctx:
   # uri_list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream,rtsp://210.99.70.120:1935/live/cctv016.stream,rtsp://210.99.70.120:1935/live/cctv017.stream,rtsp://210.99.70.120:1935/live/cctv018.stream,rtsp://210.99.70.120:1935/live/cctv019.stream,rtsp://210.99.70.120:1935/live/cctv020.stream,rtsp://210.99.70.120:1935/live/cctv021.stream,rtsp://210.99.70.120:1935/live/cctv022.stream,rtsp://210.99.70.120:1935/live/cctv023.stream,rtsp://210.99.70.120:1935/live/cctv024.stream,rtsp://210.99.70.120:1935/live/cctv025.stream,rtsp://210.99.70.120:1935/live/cctv026.stream,rtsp://210.99.70.120:1935/live/cctv027.stream,rtsp://210.99.70.120:1935/live/cctv028.stream,rtsp://210.99.70.120:1935/live/cctv029.stream,rtsp://210.99.70.120:1935/live/cctv030.stream,rtsp://210.99.70.120:1935/live/cctv031.stream
   # uri_list: rtsp://210.99.70.120:1935/live/cctv001.stream,rtsp://210.99.70.120:1935/live/cctv002.stream,rtsp://210.99.70.120:1935/live/cctv003.stream,rtsp://210.99.70.120:1935/live/cctv004.stream
   # uri_list: rtsp://210.99.70.120:1935/live/cctv007.stream
-  uri_list: ""
   httpIp: "localhost"
-  httpPort: "9000"
+  httpPort: "9001"
   pipeline_width: 640
   pipeline_height: 360
   maxBatchSize: 9
@@ -36,11 +35,10 @@ multiurisrcbin:
   #parsed inside nvmultiurisrcbin
   # uri-list: file:///opt/nvidia/deepstream/deepstream/samples/streams/sample_720p.mp4
   # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream
-  # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream,rtsp://210.99.70.120:1935/live/cctv016.stream,rtsp://210.99.70.120:1935/live/cctv017.stream,rtsp://210.99.70.120:1935/live/cctv018.stream,rtsp://210.99.70.120:1935/live/cctv019.stream,rtsp://210.99.70.120:1935/live/cctv020.stream,rtsp://210.99.70.120:1935/live/cctv021.stream,rtsp://210.99.70.120:1935/live/cctv022.stream
+  uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream,rtsp://210.99.70.120:1935/live/cctv016.stream,rtsp://210.99.70.120:1935/live/cctv017.stream,rtsp://210.99.70.120:1935/live/cctv018.stream,rtsp://210.99.70.120:1935/live/cctv019.stream,rtsp://210.99.70.120:1935/live/cctv020.stream,rtsp://210.99.70.120:1935/live/cctv021.stream,rtsp://210.99.70.120:1935/live/cctv022.stream
   # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream
   # uri-list: rtsp://210.99.70.120:1935/live/cctv007.stream
-  uri-list: ""
-  port: 9000
+  port: 9001
   live-source: 1
   width: 640
   height: 360

@@ -327,17 +327,23 @@ main (int argc, char *argv[])
       return -1;
     }
 
-    GstDsNvUriSrcConfig sourceConfig;
-    memset(&sourceConfig, 0, sizeof(GstDsNvUriSrcConfig));
-    // sourceConfig.sensorId = NULL;
-    sourceConfig.sensorId = "ch01";
-    sourceConfig.uri = appctx.uri_list;
-    sourceConfig.source_id = 0;
-    sourceConfig.disable_passthrough = TRUE;
-    if (!gst_nvmultiurisrcbincreator_add_source(appctx.nvmultiurisrcbinCreator, &sourceConfig)) {
-      g_printerr ("gst_nvmultiurisrcbincreator_add_source failed. Exiting.\n");
-      return -1;
+// nhs code
+    while (appctx.sourceIdCounter != 1) {
+      g_print ("Waiting for stream/add init request...\n");
+      g_usleep(1000000); // wait for 1sec
     }
+
+
+    // GstDsNvUriSrcConfig sourceConfig;
+    // memset(&sourceConfig, 0, sizeof(GstDsNvUriSrcConfig));
+    // sourceConfig.sensorId = NULL;
+    // sourceConfig.uri = appctx.uri_list;
+    // sourceConfig.source_id = 0;
+    // sourceConfig.disable_passthrough = TRUE;
+    // if (!gst_nvmultiurisrcbincreator_add_source(appctx.nvmultiurisrcbinCreator, &sourceConfig)) {
+    //   g_printerr ("gst_nvmultiurisrcbincreator_add_source failed. Exiting.\n");
+    //   return -1;
+    // }
   } else {
     /* Create nvmultiurisrcbin instance to use REST server feature. */
     g_print ("Calling gst_element_factory_make for nvmultiurisrcbin \n");

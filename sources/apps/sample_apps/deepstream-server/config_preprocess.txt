@@ -67,7 +67,7 @@ pixel-normalization-factor=0.003921568
 #offsets=
 
 [group-0]
-src-ids=0;1;2;3
+src-ids=0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15
 custom-input-transformation-function=CustomAsyncTransformation
 process-on-roi=1
 roi-params-src-0=0;0;719;479
