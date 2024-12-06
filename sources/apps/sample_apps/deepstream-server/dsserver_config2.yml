@@ -21,20 +21,20 @@ server-app-ctx:
   # uri_list: rtsp://210.99.70.120:1935/live/cctv001.stream,rtsp://210.99.70.120:1935/live/cctv002.stream,rtsp://210.99.70.120:1935/live/cctv003.stream,rtsp://210.99.70.120:1935/live/cctv004.stream
   # uri_list: rtsp://210.99.70.120:1935/live/cctv007.stream
   httpIp: "localhost"
-  httpPort: "9001"
+  httpPort: "9002"
   pipeline_width: 640
   pipeline_height: 360
   maxBatchSize: 9
-  # batched_push_timeout: 500000
-  batched_push_timeout: 33333
+  batched_push_timeout: 666666
+  # batched_push_timeout: 33333
   live_source: 1
   drop_pipeline_eos: 1
 
 multiurisrcbin:
   #comma separated uri (no semicolon at the end). For ex- uri1,uri2,uriN
   #parsed inside nvmultiurisrcbin
-  uri-list: rtsp://210.99.70.120:1935/live/cctv001.stream,rtsp://210.99.70.120:1935/live/cctv002.stream,rtsp://210.99.70.120:1935/live/cctv003.stream,rtsp://210.99.70.120:1935/live/cctv004.stream,rtsp://210.99.70.120:1935/live/cctv005.stream,rtsp://210.99.70.120:1935/live/cctv006.stream,rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream,rtsp://210.99.70.120:1935/live/cctv016.stream,rtsp://210.99.70.120:1935/live/cctv017.stream,rtsp://210.99.70.120:1935/live/cctv018.stream,rtsp://210.99.70.120:1935/live/cctv019.stream,rtsp://210.99.70.120:1935/live/cctv020.stream
-  port: 9001
+  uri-list: rtsp://210.99.70.120:1935/live/cctv021.stream,rtsp://210.99.70.120:1935/live/cctv022.stream,rtsp://210.99.70.120:1935/live/cctv023.stream,rtsp://210.99.70.120:1935/live/cctv024.stream,rtsp://210.99.70.120:1935/live/cctv025.stream,rtsp://210.99.70.120:1935/live/cctv026.stream,rtsp://210.99.70.120:1935/live/cctv027.stream,rtsp://210.99.70.120:1935/live/cctv028.stream,rtsp://210.99.70.120:1935/live/cctv029.stream,rtsp://210.99.70.120:1935/live/cctv030.stream,rtsp://210.99.70.120:1935/live/cctv031.stream,rtsp://210.99.70.120:1935/live/cctv032.stream,rtsp://210.99.70.120:1935/live/cctv033.stream,rtsp://210.99.70.120:1935/live/cctv034.stream,rtsp://210.99.70.120:1935/live/cctv035.stream,rtsp://210.99.70.120:1935/live/cctv036.stream,rtsp://210.99.70.120:1935/live/cctv037.stream,rtsp://210.99.70.120:1935/live/cctv038.stream,rtsp://210.99.70.120:1935/live/cctv039.stream,rtsp://210.99.70.120:1935/live/cctv040.stream
+  port: 9002
   live-source: 1
   width: 640
   height: 360

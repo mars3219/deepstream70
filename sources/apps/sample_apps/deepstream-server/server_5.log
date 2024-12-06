@@ -1,0 +1,99 @@
+nohup: ignoring input
+Calling gst_element_factory_make for nvmultiurisrcbin 
+!! [WARNING]  "encoder" group not enabled.
+Using file: dsserver_config5.yml
+Civetweb version: v1.16
+0:00:04.025971686 [36m1503983[00m 0x557e40b45490 [36mINFO   [00m [00m             nvinfer gstnvinfer.cpp:682:gst_nvinfer_logger:<primary-nvinference-engine>[00m NvDsInferContext[UID 1]: Info from NvDsInferContextImpl::deserializeEngineAndBackend() <nvdsinfer_context_impl.cpp:2095> [UID = 1]: deserialized trt engine from :/workspace/samples/models/Primary_Detector/resnet18_trafficcamnet.etlt_b20_gpu0_int8.engine
+0:00:04.134770160 [36m1503983[00m 0x557e40b45490 [36mINFO   [00m [00m             nvinfer gstnvinfer.cpp:682:gst_nvinfer_logger:<primary-nvinference-engine>[00m NvDsInferContext[UID 1]: Info from NvDsInferContextImpl::generateBackendContext() <nvdsinfer_context_impl.cpp:2198> [UID = 1]: Use deserialized engine model: /workspace/samples/models/Primary_Detector/resnet18_trafficcamnet.etlt_b20_gpu0_int8.engine
+0:00:04.139710277 [36m1503983[00m 0x557e40b45490 [36mINFO   [00m [00m             nvinfer gstnvinfer_impl.cpp:343:notifyLoadModelStatus:<primary-nvinference-engine>[00m [UID 1]: Load new model:/workspace/sources/apps/sample_apps/deepstream-server/dsserver_pgie_config.yml sucessfully
+Server running at port: 9005
+INFO: ../nvdsinfer/nvdsinfer_model_builder.cpp:612 [Implicit Engine Info]: layers num: 3
+0   INPUT  kFLOAT input_1         3x544x960       
+1   OUTPUT kFLOAT output_bbox/BiasAdd 16x34x60        
+2   OUTPUT kFLOAT output_cov/Sigmoid 4x34x60         
+
+Running!!!
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+Warning: Color primaries 5 not present and will be treated BT.601
+nvstreammux: Successfully handled EOS for source_id=19
+nvstreammux: Successfully handled EOS for source_id=2
+nvstreammux: Successfully handled EOS for source_id=5
+nvstreammux: Successfully handled EOS for source_id=18
+nvstreammux: Successfully handled EOS for source_id=12
+Got EOS from stream 19
+nvstreammux: Successfully handled EOS for source_id=17
+nvstreammux: Successfully handled EOS for source_id=13
+nvstreammux: Successfully handled EOS for source_id=1
+nvstreammux: Successfully handled EOS for source_id=3
+nvstreammux: Successfully handled EOS for source_id=0
+nvstreammux: Successfully handled EOS for source_id=16
+nvstreammux: Successfully handled EOS for source_id=14
+Got EOS from stream 17
+Got EOS from stream 12
+Got EOS from stream 18
+Got EOS from stream 0
+Got EOS from stream 1
+Got EOS from stream 13
+nvstreammux: Successfully handled EOS for source_id=9
+nvstreammux: Successfully handled EOS for source_id=6
+Got EOS from stream 14
+Got EOS from stream 3
+nvstreammux: Successfully handled EOS for source_id=11
+nvstreammux: Successfully handled EOS for source_id=8
+Got EOS from stream 16
+nvstreammux: Successfully handled EOS for source_id=4
+nvstreammux: Successfully handled EOS for source_id=7
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Internal data stream error.
+ERROR from element src: Could not read from resource.
+Error details: ../gst/rtsp/gstrtspsrc.c(5750): gst_rtspsrc_loop_interleaved (): /GstPipeline:dsserver-pipeline/GstDsNvMultiUriBin:multiuribin/GstBin:multiuribin_creator/GstDsNvUriSrcBin:dsnvurisrcbin0/GstRTSPSrc:src:
+Could not receive message. (System error)
+Returned, stopping playback
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvstreammux: Successfully handled EOS for source_id=15
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+Stopping the server..!! 
+Stopped the server..!! 
+Deleting pipeline

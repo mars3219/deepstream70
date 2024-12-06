@@ -1,0 +1,129 @@
+nohup: ignoring input
+Calling gst_element_factory_make for nvmultiurisrcbin 
+!! [WARNING]  "encoder" group not enabled.
+Using file: dsserver_config7.yml
+Civetweb version: v1.16
+0:00:04.515518423 [35m1506118[00m 0x55f9496eef70 [36mINFO   [00m [00m             nvinfer gstnvinfer.cpp:682:gst_nvinfer_logger:<primary-nvinference-engine>[00m NvDsInferContext[UID 1]: Info from NvDsInferContextImpl::deserializeEngineAndBackend() <nvdsinfer_context_impl.cpp:2095> [UID = 1]: deserialized trt engine from :/workspace/samples/models/Primary_Detector/resnet18_trafficcamnet.etlt_b20_gpu0_int8.engine
+0:00:04.633303651 [35m1506118[00m 0x55f9496eef70 [36mINFO   [00m [00m             nvinfer gstnvinfer.cpp:682:gst_nvinfer_logger:<primary-nvinference-engine>[00m NvDsInferContext[UID 1]: Info from NvDsInferContextImpl::generateBackendContext() <nvdsinfer_context_impl.cpp:2198> [UID = 1]: Use deserialized engine model: /workspace/samples/models/Primary_Detector/resnet18_trafficcamnet.etlt_b20_gpu0_int8.engine
+0:00:04.638553656 [35m1506118[00m 0x55f9496eef70 [36mINFO   [00m [00m             nvinfer gstnvinfer_impl.cpp:343:notifyLoadModelStatus:<primary-nvinference-engine>[00m [UID 1]: Load new model:/workspace/sources/apps/sample_apps/deepstream-server/dsserver_pgie_config.yml sucessfully
+Server running at port: 9007
+INFO: ../nvdsinfer/nvdsinfer_model_builder.cpp:612 [Implicit Engine Info]: layers num: 3
+0   INPUT  kFLOAT input_1         3x544x960       
+1   OUTPUT kFLOAT output_bbox/BiasAdd 16x34x60        
+2   OUTPUT kFLOAT output_cov/Sigmoid 4x34x60         
+
+Running!!!
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+nvstreammux: Successfully handled EOS for source_id=16
+Got EOS from stream 16
+nvstreammux: Successfully handled EOS for source_id=5
+nvstreammux: Successfully handled EOS for source_id=11
+WARNING from element src_bin_muxer: No Sources found at the input of muxer. Waiting for sources.
+Warning: No Sources found at the input of muxer. Waiting for sources.
+Got EOS from stream 11
+WARNING from element src_bin_muxer: No Sources found at the input of muxer. Waiting for sources.
+Warning: No Sources found at the input of muxer. Waiting for sources.
+WARNING from element src_bin_muxer: No Sources found at the input of muxer. Waiting for sources.
+Warning: No Sources found at the input of muxer. Waiting for sources.
+WARNING from element src_bin_muxer: No Sources found at the input of muxer. Waiting for sources.
+Warning: No Sources found at the input of muxer. Waiting for sources.
+WARNING from element src_bin_muxer: No Sources found at the input of muxer. Waiting for sources.
+Warning: No Sources found at the input of muxer. Waiting for sources.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Internal data stream error.
+ERROR from element src: Could not read from resource.
+Error details: ../gst/rtsp/gstrtspsrc.c(5750): gst_rtspsrc_loop_interleaved (): /GstPipeline:dsserver-pipeline/GstDsNvMultiUriBin:multiuribin/GstBin:multiuribin_creator/GstDsNvUriSrcBin:dsnvurisrcbin3/GstRTSPSrc:src:
+Could not receive message. (System error)
+Returned, stopping playback
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Internal data stream error.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Internal data stream error.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Internal data stream error.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not read from resource.
+nvmultiurisrcbin ERROR from element src: Could not write to resource.

@@ -21,7 +21,7 @@ server-app-ctx:
   # uri_list: rtsp://210.99.70.120:1935/live/cctv001.stream,rtsp://210.99.70.120:1935/live/cctv002.stream,rtsp://210.99.70.120:1935/live/cctv003.stream,rtsp://210.99.70.120:1935/live/cctv004.stream
   # uri_list: rtsp://210.99.70.120:1935/live/cctv007.stream
   httpIp: "localhost"
-  httpPort: "9001"
+  httpPort: "9004"
   pipeline_width: 640
   pipeline_height: 360
   maxBatchSize: 9
@@ -33,13 +33,13 @@ server-app-ctx:
 multiurisrcbin:
   #comma separated uri (no semicolon at the end). For ex- uri1,uri2,uriN
   #parsed inside nvmultiurisrcbin
-  uri-list: rtsp://210.99.70.120:1935/live/cctv001.stream,rtsp://210.99.70.120:1935/live/cctv002.stream,rtsp://210.99.70.120:1935/live/cctv003.stream,rtsp://210.99.70.120:1935/live/cctv004.stream,rtsp://210.99.70.120:1935/live/cctv005.stream,rtsp://210.99.70.120:1935/live/cctv006.stream,rtsp://210.99.70.120:1935/live/cctv007.stream,rtsp://210.99.70.120:1935/live/cctv008.stream,rtsp://210.99.70.120:1935/live/cctv009.stream,rtsp://210.99.70.120:1935/live/cctv010.stream,rtsp://210.99.70.120:1935/live/cctv011.stream,rtsp://210.99.70.120:1935/live/cctv012.stream,rtsp://210.99.70.120:1935/live/cctv013.stream,rtsp://210.99.70.120:1935/live/cctv014.stream,rtsp://210.99.70.120:1935/live/cctv015.stream,rtsp://210.99.70.120:1935/live/cctv016.stream,rtsp://210.99.70.120:1935/live/cctv017.stream,rtsp://210.99.70.120:1935/live/cctv018.stream,rtsp://210.99.70.120:1935/live/cctv019.stream,rtsp://210.99.70.120:1935/live/cctv020.stream
-  port: 9001
+  uri-list: rtsp://210.99.70.120:1935/live/cctv061.stream,rtsp://210.99.70.120:1935/live/cctv062.stream,rtsp://210.99.70.120:1935/live/cctv063.stream,rtsp://210.99.70.120:1935/live/cctv064.stream,rtsp://210.99.70.120:1935/live/cctv065.stream,rtsp://210.99.70.120:1935/live/cctv066.stream,rtsp://210.99.70.120:1935/live/cctv067.stream,rtsp://210.99.70.120:1935/live/cctv068.stream,rtsp://210.99.70.120:1935/live/cctv069.stream,rtsp://210.99.70.120:1935/live/cctv070.stream,rtsp://210.99.70.120:1935/live/cctv071.stream,rtsp://210.99.70.120:1935/live/cctv072.stream,rtsp://210.99.70.120:1935/live/cctv073.stream,rtsp://210.99.70.120:1935/live/cctv074.stream,rtsp://210.99.70.120:1935/live/cctv075.stream,rtsp://210.99.70.120:1935/live/cctv076.stream,rtsp://210.99.70.120:1935/live/cctv077.stream,rtsp://210.99.70.120:1935/live/cctv078.stream,rtsp://210.99.70.120:1935/live/cctv079.stream,rtsp://210.99.70.120:1935/live/cctv080.stream
+  port: 9004
   live-source: 1
   width: 640
   height: 360
-  # batched-push-timeout: 666666
-  batched-push-timeout: 3333
+  batched-push-timeout: 666666 
+  # batched-push-timeout: 33333
   max-batch-size: 20
   #To simulate nvvideoconvert specific REST APIs change disable-passthrough: 1
   disable-passthrough: 0

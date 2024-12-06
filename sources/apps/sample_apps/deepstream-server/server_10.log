@@ -1,0 +1,57 @@
+nohup: ignoring input
+Calling gst_element_factory_make for nvmultiurisrcbin 
+!! [WARNING]  "encoder" group not enabled.
+Using file: dsserver_config10.yml
+Civetweb version: v1.16
+0:00:03.899081301 [36m1507829[00m 0x55614e678940 [36mINFO   [00m [00m             nvinfer gstnvinfer.cpp:682:gst_nvinfer_logger:<primary-nvinference-engine>[00m NvDsInferContext[UID 1]: Info from NvDsInferContextImpl::deserializeEngineAndBackend() <nvdsinfer_context_impl.cpp:2095> [UID = 1]: deserialized trt engine from :/workspace/samples/models/Primary_Detector/resnet18_trafficcamnet.etlt_b20_gpu0_int8.engine
+0:00:04.009833183 [36m1507829[00m 0x55614e678940 [36mINFO   [00m [00m             nvinfer gstnvinfer.cpp:682:gst_nvinfer_logger:<primary-nvinference-engine>[00m NvDsInferContext[UID 1]: Info from NvDsInferContextImpl::generateBackendContext() <nvdsinfer_context_impl.cpp:2198> [UID = 1]: Use deserialized engine model: /workspace/samples/models/Primary_Detector/resnet18_trafficcamnet.etlt_b20_gpu0_int8.engine
+0:00:04.015685513 [36m1507829[00m 0x55614e678940 [36mINFO   [00m [00m             nvinfer gstnvinfer_impl.cpp:343:notifyLoadModelStatus:<primary-nvinference-engine>[00m [UID 1]: Load new model:/workspace/sources/apps/sample_apps/deepstream-server/dsserver_pgie_config.yml sucessfully
+Server running at port: 9010
+INFO: ../nvdsinfer/nvdsinfer_model_builder.cpp:612 [Implicit Engine Info]: layers num: 3
+0   INPUT  kFLOAT input_1         3x544x960       
+1   OUTPUT kFLOAT output_bbox/BiasAdd 16x34x60        
+2   OUTPUT kFLOAT output_cov/Sigmoid 4x34x60         
+
+Running!!!
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+WARNING from element src: Could not read from resource.
+Warning: Could not read from resource.
+Warning: Color primaries 5 not present and will be treated BT.601
+
