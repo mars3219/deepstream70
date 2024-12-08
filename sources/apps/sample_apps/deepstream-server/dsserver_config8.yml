@@ -38,8 +38,8 @@ multiurisrcbin:
   live-source: 1
   width: 640
   height: 360
-  batched-push-timeout: 666666
-  # batched-push-timeout: 33333
+  # batched-push-timeout: 666666
+  batched-push-timeout: 33333
   max-batch-size: 20
   #To simulate nvvideoconvert specific REST APIs change disable-passthrough: 1
   disable-passthrough: 0
@@ -69,7 +69,7 @@ encoder:
 # Inference using nvinfer:
 primary-gie:
   plugin-type: 0
-  config-file-path: dsserver_pgie_config.yml
+  config-file-path: dsserver_pgie_config8.yml
 
 ## Inference using nvinferserver:
 #primary-gie:

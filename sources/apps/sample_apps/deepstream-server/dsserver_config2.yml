@@ -69,7 +69,7 @@ encoder:
 # Inference using nvinfer:
 primary-gie:
   plugin-type: 0
-  config-file-path: dsserver_pgie_config.yml
+  config-file-path: dsserver_pgie_config2.yml
 
 ## Inference using nvinferserver:
 #primary-gie:
