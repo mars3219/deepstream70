@@ -26,11 +26,6 @@
 #include "gst-nvdscustommessage.h"
 #include "gst-nvevent.h"
 
-// nhs code
-#include <gst/rtsp-server/rtsp-server.h>
-#define UDP_PORT 5400
-#define RTSP_PORT 8554
-
 #define MAX_DISPLAY_LEN 64
 
 #define PGIE_CLASS_ID_VEHICLE 0
@@ -217,84 +212,6 @@ bus_call (GstBus * bus, GstMessage * msg, gpointer data)
   return TRUE;
 }
 
-
-static GstRTSPServer *server;
-static gboolean
-start_rtsp_streaming (guint rtsp_port_num, guint udpsink_port_num,
-                      guint64 udp_buffer_size) {
-    GstRTSPMountPoints * mounts;
-    GstRTSPMediaFactory * factory;
-    char udpsrc_pipeline[512];
-
-    char port_num_str[64] = {0};
-    char *encoder_name;
-
-    if (udp_buffer_size == 0)
-      udp_buffer_size == 512 * 1024;
-
-    sprintf (udpsrc_pipeline,
-              "( udpsrc name=pay0 port=%d buffer-size=%lu caps=\"application/x-rtp, media=video, "
-              "clock-rate=90000, encoding-name=H264, payload=96 \" )",
-              udpsink_port_num, udp_buffer_size);
-
-    sprintf (port_num_str, "%d", rtsp_port_num);
-
-    server = gst_rtsp_server_new ();
-    g_object_set (server, "service", port_num_str, NULL);
-
-    mounts = gst_rtsp_server_get_mount_points (server);
-
-    factory = gst_rtsp_media_factory_new ();
-    gst_rtsp_media_factory_set_launch (factory, udpsrc_pipeline);
-
-    gst_rtsp_mount_points_add_factory (mounts, "/stream", factory);
-
-    g_object_unref (mounts);
-
-    gst_rtsp_server_attach (server, NULL);
-
-    g_print
-            ("\n *** DeepStream: Launched RTSP Streaming at rtsp://localhost:%d/stream ***\n\n",
-             rtsp_port_num);
-
-    return TRUE;
-}
-
-static GstRTSPFilterResult
-client_filter (GstRTSPServer * server, GstRTSPClient * client,
-               gpointer user_data)
-{
-    return GST_RTSP_FILTER_REMOVE;
-}
-
-static void
-destroy_sink_bin ()
-{
-    GstRTSPMountPoints *mounts;
-    GstRTSPSessionPool *pool;
-
-    mounts = gst_rtsp_server_get_mount_points (server);
-    gst_rtsp_mount_points_remove_factory (mounts, "/ds-test");
-    g_object_unref (mounts);
-    gst_rtsp_server_client_filter (server, client_filter, NULL);
-    pool = gst_rtsp_server_get_session_pool (server);
-    gst_rtsp_session_pool_cleanup (pool);
-    g_object_unref (pool);
-}
-
-
-/* Callback for when a new pad is added to the nvmultiurisrcbin */
-static void on_pad_added (GstElement *element, GstPad *pad, gpointer user_data) {
-    /* Check if the pad is linked */
-    GstPad *sinkpad = gst_element_get_static_pad(appctx.sink, "sink");
-    if (gst_pad_is_linked(sinkpad)) {
-        g_print("Pad linked, starting RTSP server...\n");
-        start_rtsp_streaming(RTSP_PORT, UDP_PORT, 0);
-    }
-    gst_object_unref(sinkpad);
-}
-
-
 int
 main (int argc, char *argv[])
 {
@@ -311,9 +228,6 @@ main (int argc, char *argv[])
   gboolean yaml_config = FALSE;
   NvDsGieType pgie_type = NVDS_GIE_PLUGIN_INFER;
   GstPad * sink_pad = NULL;
-
-  // nhs code
-  GstCaps *caps4 = NULL;
 
 
   gboolean rest_server_within_multiurisrcbin = FALSE;
@@ -414,8 +328,6 @@ main (int argc, char *argv[])
     }
 
 // nhs code
-    g_signal_connect (appctx.nvmultiurisrcbinCreator, "pad-added", G_CALLBACK(on_pad_added), NULL);
-
     while (appctx.sourceIdCounter != 1) {
       g_print ("Waiting for stream/add init request...\n");
       g_usleep(1000000); // wait for 1sec
@@ -451,7 +363,6 @@ main (int argc, char *argv[])
   if (enc_enable) {
     appctx.nvvidconv2 = gst_element_factory_make("nvvideoconvert", "nvvideo-converter-2");
     if (codec_status.codec_type == 1){
-      // nhs code
       appctx.encoder = gst_element_factory_make("nvv4l2h264enc", "nvv4l2h264encoder");
       appctx.parser = gst_element_factory_make("h264parse", "h264parse");
     } else if (codec_status.codec_type == 2){
@@ -527,30 +438,16 @@ main (int argc, char *argv[])
         appctx.sink = gst_element_factory_make ("nveglglessink", "nvvideo-renderer");
 #endif
       } else {
-        // appctx.sink = gst_element_factory_make("filesink", "file-sink");
-        // if (codec_status.codec_type == 1) {
-        //   g_object_set (G_OBJECT (appctx.sink),
-        //     "location", "out.h264", NULL);
-        //   g_object_set (G_OBJECT (appctx.sink),
-        //     "sync", 1, NULL);
-        // } else if (codec_status.codec_type == 2) {
-        //   g_object_set (G_OBJECT (appctx.sink),
-        //     "sync", 1, NULL);
-        // }
-
-        // nhs code
-        appctx.filter = gst_element_factory_make ("capsfilter", "filter");
-        caps4 = gst_caps_from_string ("video/x-raw, format=I420");
-        g_object_set (G_OBJECT (appctx.filter), "caps", caps4, NULL);
-        gst_caps_unref (caps4);
-
-        appctx.rtp_pay = gst_element_factory_make ("rtph264pay", "rtp-payer");
-        appctx.sink = gst_element_factory_make ("udpsink", "udp-sink");
-        g_object_set (G_OBJECT (appctx.encoder), "bitrate", 4000000, NULL);
-        g_object_set (G_OBJECT (appctx.encoder), "iframeinterval", 30, NULL);
-        g_object_set (G_OBJECT (appctx.encoder), "profile", 2, NULL);
-        g_object_set (G_OBJECT (appctx.sink), "host", "127.0.0.1", "port",
-                      UDP_PORT, "async", FALSE, "sync", 1, NULL);
+        appctx.sink = gst_element_factory_make("filesink", "file-sink");
+        if (codec_status.codec_type == 1) {
+          g_object_set (G_OBJECT (appctx.sink),
+            "location", "out.h264", NULL);
+          g_object_set (G_OBJECT (appctx.sink),
+            "sync", 1, NULL);
+        } else if (codec_status.codec_type == 2) {
+          g_object_set (G_OBJECT (appctx.sink),
+            "sync", 1, NULL);
+        }
       }
     }
   }
@@ -614,11 +511,9 @@ main (int argc, char *argv[])
                      appctx.pgie, appctx.queue2, appctx.nvdslogger, appctx.tiler,
                      appctx.queue3, appctx.nvvidconv, appctx.queue4, appctx.nvosd,
                      appctx.queue5, appctx.sink, NULL);
-
-    // nhs code
     if (enc_enable){
-      gst_bin_add_many (GST_BIN (appctx.pipeline), appctx.nvvidconv2, appctx.filter,
-                        appctx.encoder, appctx.parser, appctx.queue_post_encoder, NULL);
+      gst_bin_add_many (GST_BIN (appctx.pipeline), appctx.nvvidconv2, appctx.encoder,
+                        appctx.parser, appctx.queue_post_encoder, NULL);
     }
   }
   /* we link the elements together
@@ -633,8 +528,6 @@ main (int argc, char *argv[])
         return -1;
       }
     } else {
-
-      // nhs code
       if (!gst_element_link_many (
             gst_nvmultiurisrcbincreator_get_bin(appctx.nvmultiurisrcbinCreator),
             appctx.queue1, appctx.preprocess, appctx.pgie, appctx.queue2,
@@ -670,8 +563,7 @@ main (int argc, char *argv[])
     }
   }
   else {
-    // nhs code
-    gst_element_link_many (appctx.queue5, appctx.nvvidconv2, appctx.filter, appctx.encoder, appctx.parser, appctx.sink, NULL);
+    gst_element_link_many (appctx.queue5, appctx.nvvidconv2, appctx.encoder, appctx.queue_post_encoder, appctx.parser, appctx.sink, NULL);
   }
 
   /* Lets add probe to get informed of the meta data generated, we add probe to
@@ -697,9 +589,6 @@ main (int argc, char *argv[])
   g_print ("Using file: %s\n", argv[1]);
 
   gst_element_set_state (appctx.pipeline, GST_STATE_PLAYING);
-
-  // // nhs code
-  // start_rtsp_streaming (RTSP_PORT, UDP_PORT, 0);
 
   /* Wait till pipeline encounters an error or EOS */
   g_print ("Running!!!\n");

@@ -64,6 +64,12 @@ typedef struct
   GstElement *parser;
   GstElement *queue_post_encoder;
 
+  // RTSP Server elements
+  GstElement *filter;
+  GstElement *rtp_pay;
+  // RTSP
+
+
   void* restServer;
   NvDsServerConfig server_conf;
   gchar* httpIp;

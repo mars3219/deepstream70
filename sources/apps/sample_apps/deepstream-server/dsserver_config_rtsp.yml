@@ -59,7 +59,15 @@ tiler:
   height: 720
 
 sink:
+  type: 4
+  container: 1
+  codec: 1
   sync: 0
+  bitrate: 40000000
+  iframeinterval: 30
+  rtsp-port: 8554
+  udp-prot: 5400
+  profile: 2
   qos: 0
 
 encoder:
