@@ -274,7 +274,7 @@ destroy_sink_bin ()
     GstRTSPSessionPool *pool;
 
     mounts = gst_rtsp_server_get_mount_points (server);
-    gst_rtsp_mount_points_remove_factory (mounts, "/ds-test");
+    gst_rtsp_mount_points_remove_factory (mounts, "/stream");
     g_object_unref (mounts);
     gst_rtsp_server_client_filter (server, client_filter, NULL);
     pool = gst_rtsp_server_get_session_pool (server);
@@ -283,16 +283,19 @@ destroy_sink_bin ()
 }
 
 
-/* Callback for when a new pad is added to the nvmultiurisrcbin */
-static void on_pad_added (GstElement *element, GstPad *pad, gpointer user_data) {
-    /* Check if the pad is linked */
-    GstPad *sinkpad = gst_element_get_static_pad(appctx.sink, "sink");
-    if (gst_pad_is_linked(sinkpad)) {
-        g_print("Pad linked, starting RTSP server...\n");
-        start_rtsp_streaming(RTSP_PORT, UDP_PORT, 0);
-    }
-    gst_object_unref(sinkpad);
-}
+// /* Callback for when a new pad is added to the nvmultiurisrcbin */
+// static void on_pad_added (GstElement *element, GstPad *pad, gpointer *user_data) {
+//     AppCtx *appctx = (AppCtx *)user_data;
+//     g_print("New pad added: %s\n", GST_PAD_NAME(pad));
+    
+//     /* Check if the pad is linked */
+//     GstPad *sinkpad = gst_element_get_static_pad(appctx->sink, "sink");
+//     if (gst_pad_is_linked(sinkpad)) {
+//         g_print("Pad linked, starting RTSP server...\n");
+//         start_rtsp_streaming(RTSP_PORT, UDP_PORT, 0);
+//     }
+//     gst_object_unref(sinkpad);
+// }
 
 
 int
@@ -414,8 +417,6 @@ main (int argc, char *argv[])
     }
 
 // nhs code
-    g_signal_connect (appctx.nvmultiurisrcbinCreator, "pad-added", G_CALLBACK(on_pad_added), NULL);
-
     while (appctx.sourceIdCounter != 1) {
       g_print ("Waiting for stream/add init request...\n");
       g_usleep(1000000); // wait for 1sec
@@ -442,6 +443,9 @@ main (int argc, char *argv[])
     }
     nvds_parse_multiurisrcbin (appctx.multiuribin, argv[1], "multiurisrcbin");
   }
+
+  // nhs code
+  // g_signal_connect (appctx.multiuribin, "pad-added", G_CALLBACK(on_pad_added), &appctx);
 
   NvDsYamlCodecStatus codec_status;
   nvds_parse_codec_status (argv[1], "encoder", &codec_status);
@@ -618,7 +622,7 @@ main (int argc, char *argv[])
     // nhs code
     if (enc_enable){
       gst_bin_add_many (GST_BIN (appctx.pipeline), appctx.nvvidconv2, appctx.filter,
-                        appctx.encoder, appctx.parser, appctx.queue_post_encoder, NULL);
+                        appctx.encoder, appctx.parser, appctx.queue_post_encoder, appctx.rtp_pay, NULL);
     }
   }
   /* we link the elements together
@@ -671,7 +675,8 @@ main (int argc, char *argv[])
   }
   else {
     // nhs code
-    gst_element_link_many (appctx.queue5, appctx.nvvidconv2, appctx.filter, appctx.encoder, appctx.parser, appctx.sink, NULL);
+    gst_element_link_many (appctx.queue5, appctx.nvvidconv2, appctx.filter, appctx.encoder, 
+                          appctx.queue_post_encoder, appctx.parser, appctx.rtp_pay, appctx.sink, NULL);
   }
 
   /* Lets add probe to get informed of the meta data generated, we add probe to
@@ -698,14 +703,15 @@ main (int argc, char *argv[])
 
   gst_element_set_state (appctx.pipeline, GST_STATE_PLAYING);
 
-  // // nhs code
-  // start_rtsp_streaming (RTSP_PORT, UDP_PORT, 0);
 
   /* Wait till pipeline encounters an error or EOS */
   g_print ("Running!!!\n");
 
   g_main_loop_run (loop);
 
+  // nhs code
+  start_rtsp_streaming (RTSP_PORT, UDP_PORT, 0);
+  
   /* Out of the main loop, clean up nicely */
   g_print ("Returned, stopping playback\n");
   gst_element_set_state (appctx.pipeline, GST_STATE_NULL);
