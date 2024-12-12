@@ -316,7 +316,7 @@ main (int argc, char *argv[])
   GstPad * sink_pad = NULL;
 
   // nhs code
-  GstCaps *caps4 = NULL;
+  GstCaps *caps = NULL;
 
 
   gboolean rest_server_within_multiurisrcbin = FALSE;
@@ -467,6 +467,16 @@ main (int argc, char *argv[])
       return -1;
     }
 
+    // nhs code
+    appctx.filter = gst_element_factory_make ("capsfilter", "filter");
+    caps = gst_caps_from_string ("video/x-raw(memory:NVMM), format=I420");
+    g_object_set (G_OBJECT (appctx.filter), "caps", caps, NULL);
+    gst_caps_unref (caps);
+
+    appctx.encoder = gst_element_factory_make ("nvv4l2h264enc", "nvv4l2h264encoder");
+    appctx.parser = gst_element_factory_make ("h264parse", "h264-parse2");
+    appctx.rtp_pay = gst_element_factory_make ("rtph264pay", "rtp-payer");
+
     appctx.queue_post_encoder = gst_element_factory_make("queue", "queue-post-encoder");
 
     if (!appctx.nvvidconv2 || !appctx.encoder  || !appctx.parser || !appctx.queue_post_encoder) {
@@ -531,24 +541,7 @@ main (int argc, char *argv[])
         appctx.sink = gst_element_factory_make ("nveglglessink", "nvvideo-renderer");
 #endif
       } else {
-        // appctx.sink = gst_element_factory_make("filesink", "file-sink");
-        // if (codec_status.codec_type == 1) {
-        //   g_object_set (G_OBJECT (appctx.sink),
-        //     "location", "out.h264", NULL);
-        //   g_object_set (G_OBJECT (appctx.sink),
-        //     "sync", 1, NULL);
-        // } else if (codec_status.codec_type == 2) {
-        //   g_object_set (G_OBJECT (appctx.sink),
-        //     "sync", 1, NULL);
-        // }
-
         // nhs code
-        appctx.filter = gst_element_factory_make ("capsfilter", "filter");
-        caps4 = gst_caps_from_string ("video/x-raw, format=I420");
-        g_object_set (G_OBJECT (appctx.filter), "caps", caps4, NULL);
-        gst_caps_unref (caps4);
-
-        appctx.rtp_pay = gst_element_factory_make ("rtph264pay", "rtp-payer");
         appctx.sink = gst_element_factory_make ("udpsink", "udp-sink");
         g_object_set (G_OBJECT (appctx.encoder), "bitrate", 4000000, NULL);
         g_object_set (G_OBJECT (appctx.encoder), "iframeinterval", 30, NULL);
@@ -622,7 +615,7 @@ main (int argc, char *argv[])
     // nhs code
     if (enc_enable){
       gst_bin_add_many (GST_BIN (appctx.pipeline), appctx.nvvidconv2, appctx.filter,
-                        appctx.encoder, appctx.parser, appctx.queue_post_encoder, appctx.rtp_pay, NULL);
+                        appctx.encoder, appctx.parser, appctx.rtp_pay, appctx.queue_post_encoder, NULL);
     }
   }
   /* we link the elements together
