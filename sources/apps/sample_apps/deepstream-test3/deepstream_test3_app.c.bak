@@ -1,23 +1,13 @@
 /*
- * Copyright (c) 2018-2022, NVIDIA CORPORATION. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2018-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: LicenseRef-NvidiaProprietary
  *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
+ * NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
+ * property and proprietary rights in and to this material, related
+ * documentation and any modifications thereto. Any use, reproduction,
+ * disclosure or distribution of this material and related documentation
+ * without an express license agreement from NVIDIA CORPORATION or
+ * its affiliates is strictly prohibited.
  */
 
 #include <gst/gst.h>
@@ -32,16 +22,14 @@
 #include "nvds_yml_parser.h"
 #include "gst-nvmessage.h"
 
-#include <gst/rtsp-server/rtsp-server.h>
-
 #define MAX_DISPLAY_LEN 64
 
 #define PGIE_CLASS_ID_VEHICLE 0
 #define PGIE_CLASS_ID_PERSON 2
 
-/* By default, OSD process-mode is set to CPU_MODE. To change mode, set as:
- * 1: GPU mode (for Tesla only)
- * 2: HW mode (For Jetson only)
+/* By default, OSD process-mode is set to GPU_MODE. To change mode, set as:
+ * 0: CPU mode
+ * 1: GPU mode
  */
 #define OSD_PROCESS_MODE 1
 
@@ -65,13 +53,19 @@
  * pads having this capability will push GstBuffers containing cuda buffers. */
 #define GST_CAPS_FEATURES_NVMM "memory:NVMM"
 
+/* Check for parsing error. */
+#define RETURN_ON_PARSER_ERROR(parse_expr) \
+  if (NVDS_YAML_PARSER_SUCCESS != parse_expr) { \
+    g_printerr("Error in parsing configuration file.\n"); \
+    return -1; \
+  }
+
 gchar pgie_classes_str[4][32] = { "Vehicle", "TwoWheeler", "Person",
   "RoadSign"
 };
 
 static gboolean PERF_MODE = FALSE;
 
-guint udp_port  = 5400;
 
 /* tiler_sink_pad_buffer_probe  will extract metadata received on OSD sink pad
  * and update params for drawing rectangle, object information etc. */
@@ -258,6 +252,7 @@ create_source_bin (guint index, gchar * uri)
   if (PERF_MODE) {
     uri_decode_bin = gst_element_factory_make ("nvurisrcbin", "uri-decode-bin");
     g_object_set (G_OBJECT (uri_decode_bin), "file-loop", TRUE, NULL);
+    g_object_set (G_OBJECT (uri_decode_bin), "cudadec-memtype", 0, NULL);
   } else {
     uri_decode_bin = gst_element_factory_make ("uridecodebin", "uri-decode-bin");
   }
@@ -293,88 +288,21 @@ create_source_bin (guint index, gchar * uri)
   return bin;
 }
 
-static GstRTSPServer *server;
-static gboolean
-start_rtsp_streaming (guint rtsp_port_num, guint updsink_port_num,
-                      guint64 udp_buffer_size)
-{
-    GstRTSPMountPoints *mounts;
-    GstRTSPMediaFactory *factory;
-    char udpsrc_pipeline[512];
-
-    char port_num_Str[64] = { 0 };
-    char *encoder_name;
-
-    if (udp_buffer_size == 0)
-        udp_buffer_size = 512 * 1024;
-
-    sprintf (udpsrc_pipeline,
-             "( udpsrc name=pay0 port=%d buffer-size=%lu caps=\"application/x-rtp, media=video, "
-             "clock-rate=90000, encoding-name=H264, payload=96 \" )",
-             updsink_port_num, udp_buffer_size);
-
-    sprintf (port_num_Str, "%d", rtsp_port_num);
-
-    server = gst_rtsp_server_new ();
-    g_object_set (server, "service", port_num_Str, NULL);
-
-    mounts = gst_rtsp_server_get_mount_points (server);
-
-    factory = gst_rtsp_media_factory_new ();
-    gst_rtsp_media_factory_set_launch (factory, udpsrc_pipeline);
-
-    gst_rtsp_mount_points_add_factory (mounts, "/ds-test", factory);
-
-    g_object_unref (mounts);
-
-    gst_rtsp_server_attach (server, NULL);
-
-    g_print
-            ("\n *** DeepStream: Launched RTSP Streaming at rtsp://localhost:%d/ds-test ***\n\n",
-             rtsp_port_num);
-
-    return TRUE;
-}
-
-static GstRTSPFilterResult
-client_filter (GstRTSPServer * server, GstRTSPClient * client,
-               gpointer user_data)
-{
-    return GST_RTSP_FILTER_REMOVE;
-}
-
-static void
-destroy_sink_bin ()
-{
-    GstRTSPMountPoints *mounts;
-    GstRTSPSessionPool *pool;
-
-    mounts = gst_rtsp_server_get_mount_points (server);
-    gst_rtsp_mount_points_remove_factory (mounts, "/ds-test");
-    g_object_unref (mounts);
-    gst_rtsp_server_client_filter (server, client_filter, NULL);
-    pool = gst_rtsp_server_get_session_pool (server);
-    gst_rtsp_session_pool_cleanup (pool);
-    g_object_unref (pool);
-}
-
-
 int
 main (int argc, char *argv[])
 {
   GMainLoop *loop = NULL;
   GstElement *pipeline = NULL, *streammux = NULL, *sink = NULL, *pgie = NULL,
       *queue1, *queue2, *queue3, *queue4, *queue5, *nvvidconv = NULL,
-      *nvosd = NULL, *tiler = NULL, *nvdslogger = NULL, 
-      *nvvidconv1 = NULL, *filter4 = NULL, *parse = NULL, *rtppay = NULL, *encoder = NULL;
-  GstElement *transform = NULL;
+      *nvosd = NULL, *tiler = NULL, *nvdslogger = NULL;
   GstBus *bus = NULL;
   guint bus_watch_id;
   GstPad *tiler_src_pad = NULL;
   guint i =0, num_sources = 0;
   guint tiler_rows, tiler_columns;
   guint pgie_batch_size;
-  GstCaps *caps4 = NULL;
+  gboolean yaml_config = FALSE;
+  NvDsGieType pgie_type = NVDS_GIE_PLUGIN_INFER;
   PERF_MODE = g_getenv("NVDS_TEST3_PERF_MODE") &&
       !g_strcmp0(g_getenv("NVDS_TEST3_PERF_MODE"), "1");
 
@@ -394,6 +322,15 @@ main (int argc, char *argv[])
   gst_init (&argc, &argv);
   loop = g_main_loop_new (NULL, FALSE);
 
+  /* Parse inference plugin type */
+  yaml_config = (g_str_has_suffix (argv[1], ".yml") ||
+          g_str_has_suffix (argv[1], ".yaml"));
+
+  if (yaml_config) {
+    RETURN_ON_PARSER_ERROR(nvds_parse_gie_type(&pgie_type, argv[1],
+                "primary-gie"));
+  }
+
   /* Create gstreamer elements */
   /* Create Pipeline element that will form a connection of other elements */
   pipeline = gst_pipeline_new ("dstest3-pipeline");
@@ -409,9 +346,9 @@ main (int argc, char *argv[])
 
   GList *src_list = NULL ;
 
-  if (g_str_has_suffix (argv[1], ".yml") || g_str_has_suffix (argv[1], ".yaml")) {
+  if (yaml_config) {
 
-    nvds_parse_source_list(&src_list, argv[1], "source-list");
+    RETURN_ON_PARSER_ERROR(nvds_parse_source_list(&src_list, argv[1], "source-list"));
 
     GList * temp = src_list;
     while(temp) {
@@ -442,7 +379,7 @@ main (int argc, char *argv[])
     gst_bin_add (GST_BIN (pipeline), source_bin);
 
     g_snprintf (pad_name, 15, "sink_%u", i);
-    sinkpad = gst_element_get_request_pad (streammux, pad_name);
+    sinkpad = gst_element_request_pad_simple (streammux, pad_name);
     if (!sinkpad) {
       g_printerr ("Streammux request sink pad failed. Exiting.\n");
       return -1;
@@ -462,17 +399,21 @@ main (int argc, char *argv[])
     gst_object_unref (srcpad);
     gst_object_unref (sinkpad);
 
-    if (g_str_has_suffix (argv[1], ".yml") || g_str_has_suffix (argv[1], ".yaml")) {
+    if (yaml_config) {
       src_list = src_list->next;
     }
   }
 
-  if (g_str_has_suffix (argv[1], ".yml") || g_str_has_suffix (argv[1], ".yaml")) {
+  if (yaml_config) {
     g_list_free(src_list);
   }
 
-  /* Use nvinfer to infer on batched frame. */
-  pgie = gst_element_factory_make ("nvinfer", "primary-nvinference-engine");
+  /* Use nvinfer or nvinferserver to infer on batched frame. */
+  if (pgie_type == NVDS_GIE_PLUGIN_INFER_SERVER) {
+    pgie = gst_element_factory_make ("nvinferserver", "primary-nvinference-engine");
+  } else {
+    pgie = gst_element_factory_make ("nvinfer", "primary-nvinference-engine");
+  }
 
   /* Add queue elements between every two elements */
   queue1 = gst_element_factory_make ("queue", "queue1");
@@ -498,32 +439,15 @@ main (int argc, char *argv[])
     sink = gst_element_factory_make ("fakesink", "nvvideo-renderer");
   } else {
     /* Finally render the osd output */
-    // if(prop.integrated) {
-    //   transform = gst_element_factory_make ("nvegltransform", "nvegl-transform");
-    //   if(!transform) {
-    //     g_printerr ("One tegra element could not be created. Exiting.\n");
-    //     return -1;
-    //   }
-    // }
-    // sink = gst_element_factory_make ("nveglglessink", "nvvideo-renderer");
-    
-    nvvidconv1 = gst_element_factory_make ("nvvideoconvert", "nvvideo-converter1");
-
-    filter4 = gst_element_factory_make ("capsfilter", "filter4");
-    caps4 = gst_caps_from_string ("video/x-raw(memory:NVMM), format=I420");
-    g_object_set (G_OBJECT (filter4), "caps", caps4, NULL);
-    gst_caps_unref (caps4);
-
-    // x264enc = gst_element_factory_make ("x264enc", "h264 encoder");
-    encoder = gst_element_factory_make ("nvv4l2h264enc", "nvv4l2h264encoder"); 
-    parse = gst_element_factory_make ("h264parse", "h264-parser2");
-    rtppay = gst_element_factory_make ("rtph264pay", "rtp-payer");
-    sink = gst_element_factory_make ("udpsink", "udp-sink");
-    g_object_set (G_OBJECT (encoder), "bitrate", 4000000, NULL);
-    g_object_set (G_OBJECT (encoder), "iframeinterval", 30, NULL);
-    g_object_set (G_OBJECT (encoder), "profile", 2, NULL);
-    g_object_set (G_OBJECT (sink), "host", "127.0.0.1", "port",
-                  udp_port, "async", FALSE, "sync", 1, NULL);
+    if(prop.integrated) {
+      sink = gst_element_factory_make ("nv3dsink", "nv3d-sink");
+    } else {
+#ifdef __aarch64__
+      sink = gst_element_factory_make ("nv3dsink", "nvvideo-renderer");
+#else
+      sink = gst_element_factory_make ("nveglglessink", "nvvideo-renderer");
+#endif
+    }
   }
 
   if (!pgie || !nvdslogger || !tiler || !nvvidconv || !nvosd || !sink) {
@@ -531,17 +455,11 @@ main (int argc, char *argv[])
     return -1;
   }
 
-  if (!nvvidconv1 || !filter4 || !encoder || !parse || !rtppay ) {
-    g_printerr ("One element could not be created. Exiting.\n");
-    return -1;
-  }
+  if (yaml_config) {
 
-  if (g_str_has_suffix (argv[1], ".yml") || g_str_has_suffix (argv[1], ".yaml")) {
+    RETURN_ON_PARSER_ERROR(nvds_parse_streammux(streammux, argv[1],"streammux"));
 
-    nvds_parse_streammux(streammux, argv[1],"streammux");
-
-    g_object_set (G_OBJECT (pgie),
-      "config-file-path", "dstest3_pgie_config.yml", NULL);
+    RETURN_ON_PARSER_ERROR(nvds_parse_gie(pgie, argv[1], "primary-gie"));
 
     g_object_get (G_OBJECT (pgie), "batch-size", &pgie_batch_size, NULL);
     if (pgie_batch_size != num_sources) {
@@ -551,14 +469,26 @@ main (int argc, char *argv[])
       g_object_set (G_OBJECT (pgie), "batch-size", num_sources, NULL);
     }
 
-    nvds_parse_osd(nvosd, argv[1],"osd");
+    RETURN_ON_PARSER_ERROR(nvds_parse_osd(nvosd, argv[1],"osd"));
 
     tiler_rows = (guint) sqrt (num_sources);
     tiler_columns = (guint) ceil (1.0 * num_sources / tiler_rows);
     g_object_set (G_OBJECT (tiler), "rows", tiler_rows, "columns", tiler_columns, NULL);
 
-    nvds_parse_tiler(tiler, argv[1], "tiler");
-    // nvds_parse_egl_sink(sink, argv[1], "sink");
+    RETURN_ON_PARSER_ERROR(nvds_parse_tiler(tiler, argv[1], "tiler"));
+    if (PERF_MODE) {
+      RETURN_ON_PARSER_ERROR(nvds_parse_fake_sink (sink, argv[1], "sink"));
+    }
+    else if(prop.integrated) {
+      RETURN_ON_PARSER_ERROR(nvds_parse_3d_sink(sink, argv[1], "sink"));
+    } else {
+#ifdef __aarch64__
+      RETURN_ON_PARSER_ERROR(nvds_parse_3d_sink(sink, argv[1], "sink"));
+#else
+      RETURN_ON_PARSER_ERROR(nvds_parse_egl_sink(sink, argv[1], "sink"));
+#endif
+    }
+
   }
   else {
 
@@ -594,6 +524,14 @@ main (int argc, char *argv[])
 
   }
 
+  if (PERF_MODE) {
+      if(prop.integrated) {
+          g_object_set (G_OBJECT (streammux), "nvbuf-memory-type", 4, NULL);
+      } else {
+          g_object_set (G_OBJECT (streammux), "nvbuf-memory-type", 2, NULL);
+      }
+  }
+
   /* we add a message handler */
   bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
   bus_watch_id = gst_bus_add_watch (bus, bus_call, loop);
@@ -601,36 +539,17 @@ main (int argc, char *argv[])
 
   /* Set up the pipeline */
   /* we add all elements into the pipeline */
-  if(transform) {
-    gst_bin_add_many (GST_BIN (pipeline), queue1, pgie, queue2, nvdslogger, tiler,
-        queue3, nvvidconv, queue4, nvosd, queue5, transform, 
-        nvvidconv1, filter4, encoder, parse, rtppay, sink, NULL);
-    /* we link the elements together
-    * nvstreammux -> nvinfer -> nvdslogger -> nvtiler -> nvvidconv -> nvosd
-    * -> video-renderer */
-    if (!gst_element_link_many (streammux, queue1, pgie, queue2, nvdslogger, tiler,
-          queue3, nvvidconv, queue4, nvosd, queue5, transform, 
-          nvvidconv1, filter4, encoder, parse, rtppay, sink, NULL)) {
-      g_printerr ("Elements could not be linked. Exiting.\n");
-      return -1;
-    }
-  }
-  else {
   gst_bin_add_many (GST_BIN (pipeline), queue1, pgie, queue2, nvdslogger, tiler,
-      queue3, nvvidconv, queue4, nvosd, queue5, 
-      nvvidconv1, filter4, encoder, parse, rtppay, sink, NULL);
-    /* we link the elements together
-    * nvstreammux -> nvinfer -> nvdslogger -> nvtiler -> nvvidconv -> nvosd
-    * -> video-renderer */
-    if (!gst_element_link_many (streammux, queue1, pgie, queue2, nvdslogger, tiler,
-          queue3, nvvidconv, queue4, nvosd, queue5, 
-          nvvidconv1, filter4, encoder, parse, rtppay, sink, NULL)) {
-      g_printerr ("Elements could not be linked. Exiting.\n");
-      return -1;
-    }
+      queue3, nvvidconv, queue4, nvosd, queue5, sink, NULL);
+  /* we link the elements together
+  * nvstreammux -> nvinfer -> nvdslogger -> nvtiler -> nvvidconv -> nvosd
+  * -> video-renderer */
+  if (!gst_element_link_many (streammux, queue1, pgie, queue2, nvdslogger, tiler,
+        queue3, nvvidconv, queue4, nvosd, queue5, sink, NULL)) {
+    g_printerr ("Elements could not be linked. Exiting.\n");
+    return -1;
   }
 
-  
   /* Lets add probe to get informed of the meta data generated, we add probe to
    * the sink pad of the osd element, since by that time, the buffer would have
    * had got all the metadata. */
@@ -643,7 +562,7 @@ main (int argc, char *argv[])
   gst_object_unref (tiler_src_pad);
 
   /* Set the pipeline to "playing" state */
-  if (g_str_has_suffix (argv[1], ".yml") || g_str_has_suffix (argv[1], ".yaml")) {
+  if (yaml_config) {
     g_print ("Using file: %s\n", argv[1]);
   }
   else {
@@ -654,7 +573,7 @@ main (int argc, char *argv[])
     g_print ("\n");
   }
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
-  start_rtsp_streaming (8554/*rtsp_port*/, udp_port, 0);
+
   /* Wait till pipeline encounters an error or EOS */
   g_print ("Running...\n");
   g_main_loop_run (loop);
@@ -666,6 +585,5 @@ main (int argc, char *argv[])
   gst_object_unref (GST_OBJECT (pipeline));
   g_source_remove (bus_watch_id);
   g_main_loop_unref (loop);
-  destroy_sink_bin();
   return 0;
 }
