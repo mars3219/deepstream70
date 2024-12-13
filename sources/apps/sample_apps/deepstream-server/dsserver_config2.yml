@@ -61,10 +61,12 @@ tiler:
 sink:
   sync: 0
   qos: 0
+  rtsp-port: 8555
+  udp-port: 5001
 
 encoder:
   codec: 1 # codec=1 h264, codec=2 h265
-  enable: 0 #Disabled, Set to 1 to enable encoder pipeline in the sample application.
+  enable: 1 #Disabled, Set to 1 to enable encoder pipeline in the sample application.
 
 # Inference using nvinfer:
 primary-gie:

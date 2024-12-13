@@ -61,6 +61,8 @@ tiler:
 sink:
   sync: 0
   qos: 0
+  rtsp-port: 8554
+  udp-port: 5000
 
 encoder:
   codec: 1 # codec=1 h264, codec=2 h265

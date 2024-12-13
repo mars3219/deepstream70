@@ -28,8 +28,9 @@
 
 // nhs code
 #include <gst/rtsp-server/rtsp-server.h>
-#define UDP_PORT 5400
-#define RTSP_PORT 8554
+#include "ds_server_yml_parse.h"
+// #define UDP_PORT 5400
+// #define RTSP_PORT 8554
 
 #define MAX_DISPLAY_LEN 64
 
@@ -282,22 +283,6 @@ destroy_sink_bin ()
     g_object_unref (pool);
 }
 
-
-// /* Callback for when a new pad is added to the nvmultiurisrcbin */
-// static void on_pad_added (GstElement *element, GstPad *pad, gpointer *user_data) {
-//     AppCtx *appctx = (AppCtx *)user_data;
-//     g_print("New pad added: %s\n", GST_PAD_NAME(pad));
-    
-//     /* Check if the pad is linked */
-//     GstPad *sinkpad = gst_element_get_static_pad(appctx->sink, "sink");
-//     if (gst_pad_is_linked(sinkpad)) {
-//         g_print("Pad linked, starting RTSP server...\n");
-//         start_rtsp_streaming(RTSP_PORT, UDP_PORT, 0);
-//     }
-//     gst_object_unref(sinkpad);
-// }
-
-
 int
 main (int argc, char *argv[])
 {
@@ -317,6 +302,8 @@ main (int argc, char *argv[])
 
   // nhs code
   GstCaps *caps = NULL;
+  guint rtsp_port = 0;
+  guint udp_port = 0;
 
 
   gboolean rest_server_within_multiurisrcbin = FALSE;
@@ -444,9 +431,6 @@ main (int argc, char *argv[])
     nvds_parse_multiurisrcbin (appctx.multiuribin, argv[1], "multiurisrcbin");
   }
 
-  // nhs code
-  // g_signal_connect (appctx.multiuribin, "pad-added", G_CALLBACK(on_pad_added), &appctx);
-
   NvDsYamlCodecStatus codec_status;
   nvds_parse_codec_status (argv[1], "encoder", &codec_status);
 
@@ -543,11 +527,13 @@ main (int argc, char *argv[])
       } else {
         // nhs code
         appctx.sink = gst_element_factory_make ("udpsink", "udp-sink");
+        ds_parse_udp_sink (appctx.sink, argv[1], "sink", &rtsp_port, &udp_port);
+
         g_object_set (G_OBJECT (appctx.encoder), "bitrate", 4000000, NULL);
         g_object_set (G_OBJECT (appctx.encoder), "iframeinterval", 30, NULL);
         g_object_set (G_OBJECT (appctx.encoder), "profile", 2, NULL);
         g_object_set (G_OBJECT (appctx.sink), "host", "127.0.0.1", "port",
-                      UDP_PORT, "async", FALSE, "sync", 1, NULL);
+                      udp_port, "async", FALSE, "sync", 1, NULL);
       }
     }
   }
@@ -696,14 +682,14 @@ main (int argc, char *argv[])
 
   gst_element_set_state (appctx.pipeline, GST_STATE_PLAYING);
 
+  // nhs code
+  start_rtsp_streaming (rtsp_port, udp_port, 0);
 
   /* Wait till pipeline encounters an error or EOS */
   g_print ("Running!!!\n");
 
   g_main_loop_run (loop);
 
-  // nhs code
-  start_rtsp_streaming (RTSP_PORT, UDP_PORT, 0);
   
   /* Out of the main loop, clean up nicely */
   g_print ("Returned, stopping playback\n");

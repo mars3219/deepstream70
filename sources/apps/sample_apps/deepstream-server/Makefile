@@ -45,7 +45,7 @@ LIBS:= $(shell pkg-config --libs $(PKGS))
 
 LIBS+= -L/usr/local/cuda-$(CUDA_VER)/lib64/ -lcudart -lnvdsgst_helper -lnvdsgst_customhelper -lnvds_rest_server -lm \
 		-L$(LIB_INSTALL_DIR) -lnvdsgst_meta -lnvds_meta -lnvds_yml_parser \
-		-lcuda -Wl,-rpath,$(LIB_INSTALL_DIR) -lnvds_rest_server -lgstrtspserver-1.0
+		-lcuda -Wl,-rpath,$(LIB_INSTALL_DIR) -lnvds_rest_server -lgstrtspserver-1.0 -lyaml-cpp
 
 ifeq ($(TARGET_DEVICE),aarch64)
    LIBS+= -L/usr/lib/aarch64-linux-gnu/tegra/ -lgstnvcustomhelper -ljsoncpp
