@@ -66,6 +66,11 @@
         "__nullptr": "cpp",
         "complex": "cpp",
         "list": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "deepstream_config_file_parser.h": "c",
+        "deepstream_sinks.h": "c",
+        "deepstream_osd.h": "c",
+        "version": "cpp",
+        "__config": "cpp"
     }
 }

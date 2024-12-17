@@ -356,7 +356,7 @@ main (int argc, char *argv[])
   PERF_MODE = g_getenv ("NVDS_SERVER_APP_PERF_MODE") &&
       !g_strcmp0 (g_getenv ("NVDS_SERVER_APP_PERF_MODE"), "1");
 
-  gchar *nvdspreprocess_config_file = (gchar *) "config_preprocess.txt";
+  gchar *nvdspreprocess_config_file = (gchar *) "/workspace/sources/apps/sample_apps/deepstream-server/config_preprocess.txt";
 
   int current_device = -1;
   cudaGetDevice (&current_device);

@@ -33,7 +33,8 @@ nvbuf-memory-type=0
 enable=1
 #Type - 1=CameraV4L2 2=URI 3=MultiURI
 type=3
-uri=file://../../samples/streams/sample_1080p_h264.mp4
+# uri=file://../../samples/streams/sample_1080p_h264.mp4
+uri=rtsp://210.99.70.120:1935/live/cctv007.stream
 num-sources=1
 gpu-id=0
 # (0): memtype_device   - Memory type Device
@@ -74,8 +75,8 @@ batch-size=1
 ##to push the batch even if the complete batch is not formed
 batched-push-timeout=40000
 ## Set muxer output width and height
-width=1920
-height=1080
+width=1280
+height=720
 ##Enable to maintain aspect ratio wrt source, and allow black borders, works
 ##along with width, height properties
 enable-padding=0
