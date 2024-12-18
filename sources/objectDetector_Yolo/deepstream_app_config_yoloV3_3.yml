@@ -135,7 +135,7 @@ streammux:
 primary-gie:
   enable: 1
   gpu-id: 0
-  model-engine-file: model_b25_gpu0_int8_2.engine
+  model-engine-file: model_b25_gpu0_int8_3.engine
   labelfile-path: labels.txt
   batch-size: 25
   ## 0=FP32, 1=INT8, 2=FP16 mode
