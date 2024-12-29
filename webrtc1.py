@@ -32,10 +32,14 @@ def create_pipeline():
     Gst.init(None)
     
     # RTSP 스트림 처리 (rtspsrc 사용) + decodebin 사용
+    # pipeline = Gst.parse_launch(
+    #     'rtspsrc location=rtsp://210.99.70.120:1935/live/cctv006.stream ! '
+    #     'rtph264depay ! decodebin ! videoconvert ! vp8enc ! rtpvp8pay ! webrtcbin name=webrtcbin0 ! autovideosink'
+    # )
     pipeline = Gst.parse_launch(
-        'rtspsrc location=rtsp://210.99.70.120:1935/live/cctv006.stream ! '
-        'rtph264depay ! decodebin ! videoconvert ! vp8enc ! rtpvp8pay ! webrtcbin name=webrtcbin0'
-    )
+          'videotestsrc ! videoconvert ! tee name=t t. '
+          '! queue ! autovideosink t. ! queue ! vp8enc ! rtpvp8pay ! webrtcbin name=webrtcbin0'
+)
 
     webrtc_bin = pipeline.get_by_name('webrtcbin0')
 
