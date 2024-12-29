@@ -35,4 +35,8 @@ senet/**/build/
 anomaly/**/build/
 super-gradients/
 opencv/
-DeepStream-Yolo/
+
+deepstream-services-library/
+librdkafka/
+sources/DeepStream-Yolo/calibrations
+sources/DeepStream-Yolo/val2017
