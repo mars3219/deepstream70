@@ -36,6 +36,7 @@ anomaly/**/build/
 super-gradients/
 opencv/
 
+cuda_learn/
 deepstream-services-library/
 librdkafka/
 sources/DeepStream-Yolo/calibration
