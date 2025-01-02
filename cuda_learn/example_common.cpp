@@ -19,3 +19,12 @@ TYPE getSum (const TYPE* pSrc, int num) {
     sum += partial;
     return sum;
 }
+
+template <typename TYPE>
+void setNormalizedRandomData (TYPE * pDst, long long num, 
+  TYPE bound=static_cast<TYPE>(1000)) {
+    int32_t bnd = static_cast<int32_t> (bound);
+    while (num--) {
+      *pDst++ = (rand() % bnd) /static_cast<TYPE> (bnd);
+    }
+  }

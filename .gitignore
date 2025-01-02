@@ -38,5 +38,5 @@ opencv/
 
 deepstream-services-library/
 librdkafka/
-sources/DeepStream-Yolo/calibrations
+sources/DeepStream-Yolo/calibration
 sources/DeepStream-Yolo/val2017

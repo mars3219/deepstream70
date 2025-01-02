@@ -72,5 +72,6 @@
         "deepstream_osd.h": "c",
         "version": "cpp",
         "__config": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/workspace/opencv/opencv-4.10.0"
 }

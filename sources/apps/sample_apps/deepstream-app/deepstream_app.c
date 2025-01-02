@@ -351,7 +351,7 @@ bus_callback (GstBus * bus, GstMessage * message, gpointer data)
         gst_nvmessage_parse_fps_stream_add(message, &fpssensorInfo);
         s_fps_sensor_info_callback_stream_added(appCtx, &fpssensorInfo);
 
-	g_mutex_unlock (&(appCtx->perf_struct).struct_lock);
+	      g_mutex_unlock (&(appCtx->perf_struct).struct_lock);
       }
       if(gst_nvmessage_is_stream_remove(message)) {
         g_mutex_lock (&(appCtx->perf_struct).struct_lock);
